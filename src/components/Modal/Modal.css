@@ -1,13 +1,13 @@
 .modal-fondo {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.45);
-    backdrop-filter: blur(6px);
+    background: rgba(0, 0, 0, 0.18);
+    backdrop-filter: blur(2px);
     z-index: 60;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    padding: 32px 24px 32px 0;
+    padding: 0;
     box-sizing: border-box;
     animation: modalFondoEntrada 0.25s ease;
 }
@@ -21,55 +21,57 @@
     }
 }
 
-/* Panel anclado al borde derecho del viewport, fuera de la estantería (izquierda) */
+/* Panel flotante anclado al lado derecho del viewport, centrado verticalmente */
 .modal-panel {
     position: fixed;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: min(430px, 90vw);
-    max-height: 100vh;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 400px;
+    height: 560px;
+    max-height: 90vh;
     background:
         linear-gradient(180deg, #f5f0e6 0%, #e9d8b0 100%);
-    border-left: 1px solid #c9a15a;
+    border: 1px solid #c9a15a;
+    border-radius: 16px;
     box-shadow:
-        -14px 0 45px rgba(0, 0, 0, 0.55),
-        inset 1px 0 0 rgba(255, 255, 255, 0.7);
+        0 20px 50px rgba(0, 0, 0, 0.5),
+        inset 1px 1px 0 rgba(255, 255, 255, 0.8);
     display: flex;
     flex-direction: column;
     animation: modalPanelEntrada 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    overflow-y: auto;
+    overflow: hidden;
     z-index: 71;
 }
 
 @keyframes modalPanelEntrada {
     from {
-        transform: translateX(100%);
+        transform: translateX(100%) translateY(-50%);
         opacity: 0;
     }
     to {
-        transform: translateX(0);
+        transform: translateX(0) translateY(-50%);
         opacity: 1;
     }
 }
 
 .modal-cerrar {
     position: absolute;
-    top: 20px;
-    left: -42px;
+    top: 16px;
+    right: 16px;
     background: #5b2a1a;
     border: 2px solid #c9a15a;
     color: #f5f0e6;
-    width: 42px;
-    height: 42px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 26px;
+    font-size: 24px;
     line-height: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     z-index: 5;
 }
 
@@ -79,15 +81,17 @@
 }
 
 .modal-contenido {
-    padding: 44px 34px 40px;
+    padding: 30px 26px;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 18px;
+    overflow-y: auto;
+    flex: 1;
 }
 
 .modal-titulo {
     margin: 0;
-    font-size: 28px;
+    font-size: 26px;
     font-family: Georgia, 'Times New Roman', serif;
     color: #3a1a10;
     line-height: 1.15;
@@ -95,7 +99,7 @@
 
 .modal-resumen {
     margin: 0;
-    font-size: 15px;
+    font-size: 14.5px;
     color: #3a2a1a;
     line-height: 1.7;
     font-family: Georgia, 'Times New Roman', serif;
@@ -103,7 +107,7 @@
 
 .modal-imagen {
     width: 100%;
-    height: 220px;
+    height: 190px;
     background: #d7ccc8;
     border: 1px solid #c9a15a;
     border-radius: 10px;
@@ -113,6 +117,7 @@
     justify-content: center;
     position: relative;
     box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
 }
 
 .modal-imagen img {
@@ -147,7 +152,8 @@
     cursor: pointer;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
     transition: transform 0.2s ease, background 0.2s ease;
-    margin-top: 8px;
+    margin-top: 10px;
+    flex-shrink: 0;
 }
 
 .modal-boton:hover {
