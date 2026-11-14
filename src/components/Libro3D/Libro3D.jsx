@@ -2,7 +2,6 @@ import { Suspense, useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
 import { motion } from 'framer-motion';
-import { MathUtils } from 'three';
 import { proyectos } from '../../data/proyectos';
 import './Libro3D.css';
 
@@ -21,6 +20,21 @@ const FUENTE = '/fonts/Lora-Regular.ttf';
 const OBJETIVO_ALTO = 0.68; // fracción del alto visible que ocupa el libro cerrado
 const MARGEN = 0.05; // margen de seguridad al abrir el libro
 const ESCALA_MAX = 2; // límite superior de escala en pantallas muy grandes
+const SEGMENTOS_HOJA = 20;
+const RIGIDEZ = 50;
+const AMORTIGUACION = 12;
+const CURVATURA = 0.35;
+const ELEVACION = 0.12;
+const VELOCIDAD_DOBLEZ = 6;
+const SIGNO_CURVA = 1; // la hoja gira hacia ángulos negativos, barriendo hacia +z;
+// el borde libre rezaga hacia -z, que con velocidad negativa exige signo positivo
+
+function pasoResorte(resorte, objetivo, delta) {
+    const aceleracion = RIGIDEZ * (objetivo - resorte.angulo) - AMORTIGUACION * resorte.velocidad;
+    resorte.velocidad += aceleracion * delta;
+    resorte.angulo += resorte.velocidad * delta;
+    return resorte.angulo;
+}
 
 const CONTENIDO = [
     {
@@ -39,20 +53,61 @@ const CONTENIDO = [
 
 function Hoja({ indice, pasada, activa, retrocedible, onPasar, onRetroceder, contenido }) {
     const grupoRef = useRef();
+    const textoEtiquetaRef = useRef();
+    const textoTituloRef = useRef();
+    const textoCuerpoRef = useRef();
+    const textoPieRef = useRef();
+    const resorteRef = useRef({ angulo: 0, velocidad: 0 });
+    const geometriaRef = useRef();
+    const originalesRef = useRef(null);
+    const curvandoRef = useRef(false);
+    const opacidadRef = useRef(1);
     // La hoja 0 es la más cercana a la tapa delantera
     const z = GROSOR_PAGINAS / 2 - ESPACIO / 2 - indice * ESPACIO;
     const zTexto = ESPACIO * 0.45 + 0.001;
     const xTexto = 0.2;
     const anchoTexto = ANCHO - 0.4;
+    const anchoHoja = ANCHO - 0.1;
 
-    useFrame((_, delta) => {
+    useFrame((_, deltaBruto) => {
+        const geometria = geometriaRef.current;
+        if (originalesRef.current === null) {
+            originalesRef.current = geometria.attributes.position.array.slice();
+        }
+        const delta = Math.min(deltaBruto, 1 / 30);
+        const resorte = resorteRef.current;
         const objetivo = pasada ? ANGULO_HOJA : 0;
-        grupoRef.current.rotation.y = MathUtils.damp(
-            grupoRef.current.rotation.y,
-            objetivo,
-            4,
-            delta
-        );
+        grupoRef.current.rotation.y = pasoResorte(resorte, objetivo, delta);
+
+        const doblez = Math.tanh(resorte.velocidad / VELOCIDAD_DOBLEZ);
+        const doblezAbs = Math.abs(doblez);
+
+        grupoRef.current.position.z = z + ELEVACION * doblezAbs;
+
+        const posicion = geometria.attributes.position;
+        if (doblezAbs > 0.01) {
+            curvandoRef.current = true;
+            const arreglo = posicion.array;
+            const originales = originalesRef.current;
+            for (let i = 0; i < arreglo.length; i += 3) {
+                const relativo = (originales[i] + anchoHoja / 2) / anchoHoja;
+                arreglo[i + 2] = originales[i + 2] + SIGNO_CURVA * CURVATURA * doblez * relativo * relativo;
+            }
+            posicion.needsUpdate = true;
+        } else if (curvandoRef.current) {
+            curvandoRef.current = false;
+            posicion.array.set(originalesRef.current);
+            posicion.needsUpdate = true;
+        }
+
+        const opacidad = Math.max(0, 1 - doblezAbs * 2);
+        if (opacidad !== opacidadRef.current) {
+            opacidadRef.current = opacidad;
+            textoEtiquetaRef.current.fillOpacity = opacidad;
+            textoTituloRef.current.fillOpacity = opacidad;
+            textoCuerpoRef.current.fillOpacity = opacidad;
+            textoPieRef.current.fillOpacity = opacidad;
+        }
     });
 
     const manejarClick = (e) => {
@@ -80,12 +135,13 @@ function Hoja({ indice, pasada, activa, retrocedible, onPasar, onRetroceder, con
             }}
         >
             <mesh position={[ANCHO / 2, 0, 0]}>
-                <boxGeometry args={[ANCHO - 0.1, ALTO - 0.1, ESPACIO * 0.9]} />
+                <boxGeometry ref={geometriaRef} args={[anchoHoja, ALTO - 0.1, ESPACIO * 0.9, SEGMENTOS_HOJA]} />
                 <meshStandardMaterial color={COLORES_HOJA[indice % 2]} />
             </mesh>
 
             <Suspense fallback={null}>
                 <Text
+                    ref={textoEtiquetaRef}
                     font={FUENTE}
                     position={[xTexto, 0.82, zTexto]}
                     fontSize={0.05}
@@ -99,6 +155,7 @@ function Hoja({ indice, pasada, activa, retrocedible, onPasar, onRetroceder, con
                 </Text>
 
                 <Text
+                    ref={textoTituloRef}
                     font={FUENTE}
                     position={[xTexto, 0.7, zTexto]}
                     fontSize={0.13}
@@ -111,6 +168,7 @@ function Hoja({ indice, pasada, activa, retrocedible, onPasar, onRetroceder, con
                 </Text>
 
                 <Text
+                    ref={textoCuerpoRef}
                     font={FUENTE}
                     position={[xTexto, 0.45, zTexto]}
                     fontSize={0.075}
@@ -124,6 +182,7 @@ function Hoja({ indice, pasada, activa, retrocedible, onPasar, onRetroceder, con
                 </Text>
 
                 <Text
+                    ref={textoPieRef}
                     font={FUENTE}
                     position={[xTexto, -0.75, zTexto]}
                     fontSize={0.06}
@@ -154,6 +213,7 @@ function Libro({ cerrando }) {
 
     const mitad = GROSOR_PAGINAS / 2 + GROSOR_TAPA / 2;
     const tapaRef = useRef();
+    const resorteTapaRef = useRef({ angulo: 0, velocidad: 0 });
     const [abierta, setAbierta] = useState(false);
     const [paginaActual, setPaginaActual] = useState(0);
 
@@ -166,14 +226,10 @@ function Libro({ cerrando }) {
         return () => clearTimeout(temporizador);
     }, []);
 
-    useFrame((_, delta) => {
+    useFrame((_, deltaBruto) => {
+        const delta = Math.min(deltaBruto, 1 / 30);
         const objetivo = abiertaVisible ? ANGULO_ABIERTO : 0;
-        tapaRef.current.rotation.y = MathUtils.damp(
-            tapaRef.current.rotation.y,
-            objetivo,
-            3,
-            delta
-        );
+        tapaRef.current.rotation.y = pasoResorte(resorteTapaRef.current, objetivo, delta);
     });
 
     return (
