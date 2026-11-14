@@ -8,7 +8,7 @@ function Inicio() {
     const [porcentajeRecursos, setPorcentajeRecursos] = useState(100);
     const [recursosCargados, setRecursosCargados] = useState(true);
     const navigate = useNavigate();
-    const manejarButtonIngresar = () => navigate('hola');
+    const manejarButtonIngresar = () => navigate('/experiencia');
 
     return (
         <div className="inicio">
