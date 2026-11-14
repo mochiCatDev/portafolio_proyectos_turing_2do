@@ -1,8 +1,29 @@
 import { useEffect, useState } from 'react';
+import { preloadFont } from 'troika-three-text';
 
 const TIEMPO_MAXIMO = 15000; // ms antes de dar el recurso por terminado
+const FUENTES = /\.(ttf|otf|woff)$/i;
+
+function cargarFuente(url) {
+    return new Promise((resolve) => {
+        fetch(url)
+            .then((respuesta) => respuesta.arrayBuffer())
+            .then(() => {
+                preloadFont(url, resolve);
+                setTimeout(resolve, TIEMPO_MAXIMO);
+            })
+            .catch(() => {
+                setTimeout(resolve, TIEMPO_MAXIMO);
+                resolve();
+            });
+    });
+}
 
 function cargarRecurso(url) {
+    if (FUENTES.test(url)) {
+        return cargarFuente(url);
+    }
+
     return new Promise((resolve) => {
         const esVideo = /\.(mp4|webm)$/i.test(url);
         const elemento = esVideo ? document.createElement('video') : new Image();
