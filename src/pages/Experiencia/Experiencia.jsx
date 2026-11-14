@@ -4,6 +4,7 @@ import './Experiencia.css';
 
 function Experiencia() {
     const [libroAbierto, setLibroAbierto] = useState(false);
+    const [hojaPasada, setHojaPasada] = useState(false);
 
     return (
         <main className="escena-oscura">
@@ -37,21 +38,39 @@ function Experiencia() {
                             transition={{ duration: 0.8 }}
                         >
                             <div className="pagina-base">
-                                <motion.div
-                                    className="intro"
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ duration: 0.8, delay: 2 }}
-                                >
-                                    <p className="intro-saludo">Bienvenido a mi portafolio</p>
-                                    <h2>Dilan Solorzano</h2>
-                                    <p className="intro-texto">
-                                        Desarrollador frontend. Aquí encontrarás los proyectos
-                                        en los que he trabajado.
-                                    </p>
-                                    <p className="intro-pista">Toca la esquina →</p>
-                                </motion.div>
+                                <p>Aquí irán los proyectos</p>
                             </div>
+                        
+                            <motion.div
+                                className="hoja"
+                                initial={{ rotateY: 0 }}
+                                animate={{ rotateY: hojaPasada ? -160 : 0 }}
+                                transition={{ duration: 1, ease: 'easeInOut' }}
+                            >
+                                <div className="hoja-frente">
+                                    <motion.div
+                                        className="intro"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ duration: 0.8, delay: 2 }}
+                                    >
+                                        <p className="intro-saludo">Bienvenido a mi portafolio</p>
+                                        <h2>Dilan Solorzano</h2>
+                                        <p className="intro-texto">
+                                            Desarrollador frontend. Aquí encontrarás los proyectos
+                                            en los que he trabajado.
+                                        </p>
+                                        <p className="intro-pista">Toca la esquina →</p>
+                                    </motion.div>
+                        
+                                    <button
+                                        className="esquina"
+                                        aria-label="Pasar página"
+                                        onClick={() => setHojaPasada(true)}
+                                    />
+                                </div>
+                                <div className="hoja-reverso"></div>
+                            </motion.div>
                         
                             <motion.div
                                 className="tapa"
