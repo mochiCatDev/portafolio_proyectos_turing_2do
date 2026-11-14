@@ -1,0 +1,57 @@
+.escena-oscura {
+  background-color: #050505;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.luz-trasera {
+  position: absolute;
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(0,0,0,0) 70%);
+  filter: blur(40px);
+  animation: encenderLuz 4s forwards;
+}
+
+.personaje-dilan {
+  position: relative;
+  z-index: 2;
+  filter: brightness(0); /* Empieza como silueta pura */
+  animation: revelarPersonaje 4s forwards;
+}
+
+@keyframes encenderLuz {
+  0% { opacity: 0; transform: scale(0.5); }
+  100% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes revelarPersonaje {
+  0% { filter: brightness(0); }
+  50% { filter: brightness(0.2) drop-shadow(0 0 15px rgba(255,255,255,0.8)); } /* Contorno iluminado */
+  100% { filter: brightness(1) drop-shadow(0 0 10px rgba(255,255,255,0.3)); }
+}
+
+.video-fondo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.video-fundido {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(5, 5, 5, 0) 30%,
+    rgba(5, 5, 5, 1) 100%
+  );
+  pointer-events: none;
+}
