@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
 import { motion } from 'framer-motion';
@@ -17,6 +17,7 @@ const COLORES_HOJA = ['#f1e3c2', '#e9d8b0'];
 const ANGULO_ABIERTO = -2.8;
 const ANGULO_HOJA = -2.8;
 const TIEMPO_CIERRE = 1800; // ms que dura la animación de cierre
+const FUENTE = '/fonts/Lora-Regular.ttf';
 
 const CONTENIDO = [
     {
@@ -80,51 +81,57 @@ function Hoja({ indice, pasada, activa, retrocedible, onPasar, onRetroceder, con
                 <meshStandardMaterial color={COLORES_HOJA[indice % 2]} />
             </mesh>
 
-            <Text
-                position={[xTexto, 0.82, zTexto]}
-                fontSize={0.05}
-                letterSpacing={0.1}
-                color="#8a6a3a"
-                anchorX="left"
-                anchorY="top"
-                maxWidth={anchoTexto}
-            >
-                {contenido.etiqueta}
-            </Text>
+            <Suspense fallback={null}>
+                <Text
+                    font={FUENTE}
+                    position={[xTexto, 0.82, zTexto]}
+                    fontSize={0.05}
+                    letterSpacing={0.1}
+                    color="#8a6a3a"
+                    anchorX="left"
+                    anchorY="top"
+                    maxWidth={anchoTexto}
+                >
+                    {contenido.etiqueta}
+                </Text>
 
-            <Text
-                position={[xTexto, 0.7, zTexto]}
-                fontSize={0.13}
-                color="#3a1a10"
-                anchorX="left"
-                anchorY="top"
-                maxWidth={anchoTexto}
-            >
-                {contenido.titulo}
-            </Text>
+                <Text
+                    font={FUENTE}
+                    position={[xTexto, 0.7, zTexto]}
+                    fontSize={0.13}
+                    color="#3a1a10"
+                    anchorX="left"
+                    anchorY="top"
+                    maxWidth={anchoTexto}
+                >
+                    {contenido.titulo}
+                </Text>
 
-            <Text
-                position={[xTexto, 0.45, zTexto]}
-                fontSize={0.075}
-                lineHeight={1.4}
-                color="#3a2a1a"
-                anchorX="left"
-                anchorY="top"
-                maxWidth={anchoTexto}
-            >
-                {contenido.texto}
-            </Text>
+                <Text
+                    font={FUENTE}
+                    position={[xTexto, 0.45, zTexto]}
+                    fontSize={0.075}
+                    lineHeight={1.4}
+                    color="#3a2a1a"
+                    anchorX="left"
+                    anchorY="top"
+                    maxWidth={anchoTexto}
+                >
+                    {contenido.texto}
+                </Text>
 
-            <Text
-                position={[xTexto, -0.75, zTexto]}
-                fontSize={0.06}
-                color="#8a6a3a"
-                anchorX="left"
-                anchorY="bottom"
-                maxWidth={anchoTexto}
-            >
-                {contenido.pie}
-            </Text>
+                <Text
+                    font={FUENTE}
+                    position={[xTexto, -0.75, zTexto]}
+                    fontSize={0.06}
+                    color="#8a6a3a"
+                    anchorX="left"
+                    anchorY="bottom"
+                    maxWidth={anchoTexto}
+                >
+                    {contenido.pie}
+                </Text>
+            </Suspense>
         </group>
     );
 }
