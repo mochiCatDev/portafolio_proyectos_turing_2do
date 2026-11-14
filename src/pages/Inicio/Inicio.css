@@ -1,11 +1,19 @@
 .inicio {
     display: flex;
     flex-direction: column;
-    background-color: #000;
-    color: #fff;
+    background-color: black;
+    color: white;
     height: 100dvh;
     width: 100%;
     padding: 10px;
+}
+
+.inicio .porcentaje-recursos {
+    color: red;
+}
+
+.inicio .porcentaje-recursos .cargados {
+    color: green;
 }
 
 .inicio button {
