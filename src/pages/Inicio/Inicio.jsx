@@ -11,24 +11,29 @@ function Inicio() {
 
     return (
         <div className="inicio">
-            <h1>Mi Portafolio Personal</h1>
-            {mensajeInicio.map((mensaje, index) => (
-                <p key={index}>{mensaje}</p>
-            ))}
-            
-            <div 
-                className='porcentaje-recursos'
-                style={{ color: porcentajeRecursos >= 100 ? 'green' : 'inherit' }}
-            >
-                <span>{porcentajeRecursos}</span>/100
+            <div className="contenido">
+
+                <h1>Mi Portafolio Personal</h1>
+                {mensajeInicio.map((mensaje, index) => (
+                    <p key={index}>{mensaje}</p>
+                ))}
+
+                <div
+                    className='porcentaje-recursos'
+                    style={{ color: porcentajeRecursos >= 100 ? 'green' : 'inherit' }}
+                >
+                    <span>{porcentajeRecursos}</span>/100
+                </div>
+
+                <button
+                    disabled={!recursosCargados}
+                    onClick={manejarButtonIngresar}
+                >
+                    Ingresar
+                </button>
             </div>
 
-            <button
-                disabled={!recursosCargados}
-                onClick={manejarButtonIngresar}
-            >
-                Ingresar
-            </button>
+            <img src="/src/assets/inicio/chica.png" className="imagen" />
         </div>
     );
 }

@@ -8,14 +8,28 @@
     padding: 10px;
 }
 
-.inicio .porcentaje-recursos {
+.inicio .contenido {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+}
+
+.inicio .contenido .porcentaje-recursos {
     color: red;
 }
 
-.inicio .porcentaje-recursos .cargados {
+.inicio .contenido .porcentaje-recursos .cargados {
     color: green;
 }
 
-.inicio button {
+.inicio .contenido button {
+    width: 30%;
+}
+
+.inicio .imagen {
     width: 10%;
+    position: absolute;
+    bottom: 0;
 }
