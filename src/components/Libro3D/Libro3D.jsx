@@ -21,11 +21,14 @@ const OBJETIVO_ALTO = 0.68; // fracción del alto visible que ocupa el libro cer
 const MARGEN = 0.05; // margen de seguridad al abrir el libro
 const ESCALA_MAX = 2; // límite superior de escala en pantallas muy grandes
 const SEGMENTOS_HOJA = 20;
-const RIGIDEZ = 50;
-const AMORTIGUACION = 12;
-const CURVATURA = 0.35;
+const GROSOR_HOJA = ESPACIO * 0.35; // grosor del mesh de la hoja (papel fino)
+const RIGIDEZ = 30;
+const AMORTIGUACION = 9;
+const CURVATURA = 0.9;
+const ONDULACION = 0.12; // término senoidal para la S suave a lo largo del ancho
 const ELEVACION = 0.12;
 const VELOCIDAD_DOBLEZ = 6;
+const PESO_PROGRESO = 0.6; // aporte del progreso del giro al doblez (máx a mitad de giro)
 const SIGNO_CURVA = 1; // la hoja gira hacia ángulos negativos, barriendo hacia +z;
 // el borde libre rezaga hacia -z, que con velocidad negativa exige signo positivo
 
@@ -64,7 +67,7 @@ function Hoja({ indice, pasada, activa, retrocedible, onPasar, onRetroceder, con
     const opacidadRef = useRef(1);
     // La hoja 0 es la más cercana a la tapa delantera
     const z = GROSOR_PAGINAS / 2 - ESPACIO / 2 - indice * ESPACIO;
-    const zTexto = ESPACIO * 0.45 + 0.001;
+    const zTexto = GROSOR_HOJA / 2 + 0.002;
     const xTexto = 0.2;
     const anchoTexto = ANCHO - 0.4;
     const anchoHoja = ANCHO - 0.1;
@@ -79,7 +82,17 @@ function Hoja({ indice, pasada, activa, retrocedible, onPasar, onRetroceder, con
         const objetivo = pasada ? ANGULO_HOJA : 0;
         grupoRef.current.rotation.y = pasoResorte(resorte, objetivo, delta);
 
-        const doblez = Math.tanh(resorte.velocidad / VELOCIDAD_DOBLEZ);
+        const doblezVelocidad = Math.tanh(resorte.velocidad / VELOCIDAD_DOBLEZ);
+        const progreso = Math.min(1, Math.max(0, resorte.angulo / ANGULO_HOJA));
+        const campana = 4 * progreso * (1 - progreso);
+        const doblezProgreso = PESO_PROGRESO * campana;
+        let doblez = doblezVelocidad;
+        if (Math.abs(doblez) < doblezProgreso) {
+            const direccion = resorte.velocidad !== 0
+                ? Math.sign(resorte.velocidad)
+                : Math.sign(objetivo - resorte.angulo);
+            doblez = direccion * doblezProgreso;
+        }
         const doblezAbs = Math.abs(doblez);
 
         grupoRef.current.position.z = z + ELEVACION * doblezAbs;
@@ -91,13 +104,16 @@ function Hoja({ indice, pasada, activa, retrocedible, onPasar, onRetroceder, con
             const originales = originalesRef.current;
             for (let i = 0; i < arreglo.length; i += 3) {
                 const relativo = (originales[i] + anchoHoja / 2) / anchoHoja;
-                arreglo[i + 2] = originales[i + 2] + SIGNO_CURVA * CURVATURA * doblez * relativo * relativo;
+                const perfil = relativo * relativo + ONDULACION * Math.sin(relativo * Math.PI * 2);
+                arreglo[i + 2] = originales[i + 2] + SIGNO_CURVA * CURVATURA * doblez * perfil;
             }
             posicion.needsUpdate = true;
+            geometria.computeVertexNormals();
         } else if (curvandoRef.current) {
             curvandoRef.current = false;
             posicion.array.set(originalesRef.current);
             posicion.needsUpdate = true;
+            geometria.computeVertexNormals();
         }
 
         const opacidad = Math.max(0, 1 - doblezAbs * 2);
@@ -135,7 +151,7 @@ function Hoja({ indice, pasada, activa, retrocedible, onPasar, onRetroceder, con
             }}
         >
             <mesh position={[ANCHO / 2, 0, 0]}>
-                <boxGeometry ref={geometriaRef} args={[anchoHoja, ALTO - 0.1, ESPACIO * 0.9, SEGMENTOS_HOJA]} />
+                <boxGeometry ref={geometriaRef} args={[anchoHoja, ALTO - 0.1, GROSOR_HOJA, SEGMENTOS_HOJA]} />
                 <meshStandardMaterial color={COLORES_HOJA[indice % 2]} />
             </mesh>
 
@@ -297,8 +313,8 @@ function Libro3D({ onCerrar }) {
             />
 
             <Canvas className="libro-canvas" camera={{ position: [0, 0, 5], fov: 45 }}>
-                <ambientLight intensity={1.2} />
-                <directionalLight position={[3, 3, 5]} intensity={2} />
+                <ambientLight intensity={0.7} />
+                <directionalLight color="#ffd9a0" intensity={2.5} position={[-3, 2, 4]} />
                 <Libro cerrando={cerrando} />
             </Canvas>
 
