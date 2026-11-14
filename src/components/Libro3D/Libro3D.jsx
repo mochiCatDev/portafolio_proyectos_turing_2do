@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
+import { Text } from '@react-three/drei';
 import { MathUtils } from 'three';
 import { proyectos } from '../../data/proyectos';
 import './Libro3D.css';
@@ -15,10 +16,28 @@ const COLORES_HOJA = ['#f1e3c2', '#e9d8b0'];
 const ANGULO_ABIERTO = -2.8;
 const ANGULO_HOJA = -2.8;
 
-function Hoja({ indice, pasada, activa, onPasar }) {
+const CONTENIDO = [
+    {
+        etiqueta: 'BIENVENIDO A MI PORTAFOLIO',
+        titulo: 'Dilan Solorzano',
+        texto: 'Desarrollador frontend. Aquí encontrarás los proyectos en los que he trabajado.',
+        pie: 'Toca la hoja para pasar →',
+    },
+    ...proyectos.map((p) => ({
+        etiqueta: `PROYECTO ${p.id}`,
+        titulo: p.titulo,
+        texto: p.descripcion,
+        pie: p.tecnologias.join(' · '),
+    })),
+];
+
+function Hoja({ indice, pasada, activa, onPasar, contenido }) {
     const grupoRef = useRef();
     // La hoja 0 es la más cercana a la tapa delantera
     const z = GROSOR_PAGINAS / 2 - ESPACIO / 2 - indice * ESPACIO;
+    const zTexto = ESPACIO * 0.45 + 0.001;
+    const xTexto = 0.2;
+    const anchoTexto = ANCHO - 0.4;
 
     useFrame((_, delta) => {
         const objetivo = pasada ? ANGULO_HOJA : 0;
@@ -38,20 +57,67 @@ function Hoja({ indice, pasada, activa, onPasar }) {
     };
 
     return (
-        <group ref={grupoRef} position={[0, 0, z]}>
-            <mesh
-                position={[ANCHO / 2, 0, 0]}
-                onClick={manejarClick}
-                onPointerOver={() => {
-                    if (activa) document.body.style.cursor = 'pointer';
-                }}
-                onPointerOut={() => {
-                    document.body.style.cursor = 'auto';
-                }}
-            >
+        <group
+            ref={grupoRef}
+            position={[0, 0, z]}
+            onClick={manejarClick}
+            onPointerOver={() => {
+                if (activa) document.body.style.cursor = 'pointer';
+            }}
+            onPointerOut={() => {
+                document.body.style.cursor = 'auto';
+            }}
+        >
+            <mesh position={[ANCHO / 2, 0, 0]}>
                 <boxGeometry args={[ANCHO - 0.1, ALTO - 0.1, ESPACIO * 0.9]} />
                 <meshStandardMaterial color={COLORES_HOJA[indice % 2]} />
             </mesh>
+
+            <Text
+                position={[xTexto, 0.82, zTexto]}
+                fontSize={0.05}
+                letterSpacing={0.1}
+                color="#8a6a3a"
+                anchorX="left"
+                anchorY="top"
+                maxWidth={anchoTexto}
+            >
+                {contenido.etiqueta}
+            </Text>
+
+            <Text
+                position={[xTexto, 0.7, zTexto]}
+                fontSize={0.13}
+                color="#3a1a10"
+                anchorX="left"
+                anchorY="top"
+                maxWidth={anchoTexto}
+            >
+                {contenido.titulo}
+            </Text>
+
+            <Text
+                position={[xTexto, 0.45, zTexto]}
+                fontSize={0.075}
+                lineHeight={1.4}
+                color="#3a2a1a"
+                anchorX="left"
+                anchorY="top"
+                maxWidth={anchoTexto}
+            >
+                {contenido.texto}
+            </Text>
+
+            <Text
+                position={[xTexto, -0.75, zTexto]}
+                fontSize={0.06}
+                color="#8a6a3a"
+                anchorX="left"
+                anchorY="bottom"
+                maxWidth={anchoTexto}
+            >
+                {contenido.pie}
+            </Text>
         </group>
     );
 }
@@ -92,10 +158,11 @@ function Libro() {
             </mesh>
 
             {/* Hojas: intro + una por proyecto */}
-            {Array.from({ length: TOTAL_HOJAS }, (_, i) => (
+            {CONTENIDO.map((contenido, i) => (
                 <Hoja
                     key={i}
                     indice={i}
+                    contenido={contenido}
                     pasada={i < paginaActual}
                     activa={abierta && i === paginaActual}
                     onPasar={() => setPaginaActual(i + 1)}
