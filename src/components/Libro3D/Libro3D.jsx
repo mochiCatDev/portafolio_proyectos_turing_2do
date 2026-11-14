@@ -13,14 +13,42 @@ const GROSOR_PAGINAS = (TOTAL_HOJAS + 1) * ESPACIO; // + contraportada
 const COLOR_TAPA = '#5b2a1a';
 const COLORES_HOJA = ['#f1e3c2', '#e9d8b0'];
 const ANGULO_ABIERTO = -2.8;
+const ANGULO_HOJA = -2.8;
 
-function Hoja({ indice }) {
+function Hoja({ indice, pasada, activa, onPasar }) {
+    const grupoRef = useRef();
     // La hoja 0 es la más cercana a la tapa delantera
     const z = GROSOR_PAGINAS / 2 - ESPACIO / 2 - indice * ESPACIO;
 
+    useFrame((_, delta) => {
+        const objetivo = pasada ? ANGULO_HOJA : 0;
+        grupoRef.current.rotation.y = MathUtils.damp(
+            grupoRef.current.rotation.y,
+            objetivo,
+            4,
+            delta
+        );
+    });
+
+    const manejarClick = (e) => {
+        if (!activa) return;
+        e.stopPropagation();
+        document.body.style.cursor = 'auto';
+        onPasar();
+    };
+
     return (
-        <group position={[0, 0, z]}>
-            <mesh position={[ANCHO / 2, 0, 0]}>
+        <group ref={grupoRef} position={[0, 0, z]}>
+            <mesh
+                position={[ANCHO / 2, 0, 0]}
+                onClick={manejarClick}
+                onPointerOver={() => {
+                    if (activa) document.body.style.cursor = 'pointer';
+                }}
+                onPointerOut={() => {
+                    document.body.style.cursor = 'auto';
+                }}
+            >
                 <boxGeometry args={[ANCHO - 0.1, ALTO - 0.1, ESPACIO * 0.9]} />
                 <meshStandardMaterial color={COLORES_HOJA[indice % 2]} />
             </mesh>
@@ -32,6 +60,7 @@ function Libro() {
     const mitad = GROSOR_PAGINAS / 2 + GROSOR_TAPA / 2;
     const tapaRef = useRef();
     const [abierta, setAbierta] = useState(false);
+    const [paginaActual, setPaginaActual] = useState(0);
 
     useEffect(() => {
         const temporizador = setTimeout(() => setAbierta(true), 1000);
@@ -64,7 +93,13 @@ function Libro() {
 
             {/* Hojas: intro + una por proyecto */}
             {Array.from({ length: TOTAL_HOJAS }, (_, i) => (
-                <Hoja key={i} indice={i} />
+                <Hoja
+                    key={i}
+                    indice={i}
+                    pasada={i < paginaActual}
+                    activa={abierta && i === paginaActual}
+                    onPasar={() => setPaginaActual(i + 1)}
+                />
             ))}
 
             {/* Lomo */}
