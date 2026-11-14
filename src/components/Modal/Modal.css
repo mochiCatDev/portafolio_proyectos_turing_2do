@@ -1,9 +1,9 @@
 .modal-fondo {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.28);
-    backdrop-filter: blur(4px);
-    z-index: 70;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(6px);
+    z-index: 60;
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -21,19 +21,19 @@
     }
 }
 
-/* Panel anclado al lado derecho del viewport, fuera de la estantería */
+/* Panel anclado al borde derecho del viewport, fuera de la estantería (izquierda) */
 .modal-panel {
     position: fixed;
     right: 0;
     top: 0;
     bottom: 0;
-    width: min(440px, 92vw);
+    width: min(430px, 90vw);
     max-height: 100vh;
     background:
         linear-gradient(180deg, #f5f0e6 0%, #e9d8b0 100%);
     border-left: 1px solid #c9a15a;
     box-shadow:
-        -14px 0 45px rgba(0, 0, 0, 0.5),
+        -14px 0 45px rgba(0, 0, 0, 0.55),
         inset 1px 0 0 rgba(255, 255, 255, 0.7);
     display: flex;
     flex-direction: column;
@@ -60,8 +60,8 @@
     background: #5b2a1a;
     border: 2px solid #c9a15a;
     color: #f5f0e6;
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
     cursor: pointer;
     font-size: 26px;
@@ -69,19 +69,20 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
     z-index: 5;
 }
 
 .modal-cerrar:hover {
     background: #7a3d24;
+    border-color: #e8b575;
 }
 
 .modal-contenido {
-    padding: 40px 32px;
+    padding: 44px 34px 40px;
     display: flex;
     flex-direction: column;
-    gap: 22px;
+    gap: 24px;
 }
 
 .modal-titulo {
