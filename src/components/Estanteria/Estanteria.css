@@ -1,6 +1,6 @@
 .estanteria {
     position: fixed;
-    left: 0;
+    left: -100%;
     top: 0;
     bottom: 0;
     width: 30vw;
@@ -13,14 +13,16 @@
     box-shadow:
         inset -10px 0 30px rgba(0, 0, 0, 0.6),
         20px 0 50px rgba(0, 0, 0, 0.7);
-    transform: translateX(-100%);
     animation: entrarDeslizante 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     overflow: hidden;
 }
 
 @keyframes entrarDeslizante {
+    from {
+        left: -100%;
+    }
     to {
-        transform: translateX(0);
+        left: 0;
     }
 }
 
