@@ -22,15 +22,16 @@ function cargarRecurso(url) {
 }
 
 export function usePrecarga(urls) {
-    const [cargados, setCargados] = useState(0);
+    const [estado, setEstado] = useState({ urls: [], contador: 0 });
 
     useEffect(() => {
         let activo = true;
-        setCargados(0);
+        let contador = 0;
 
         urls.forEach((url) => {
             cargarRecurso(url).then(() => {
-                if (activo) setCargados((previo) => previo + 1);
+                contador += 1;
+                if (activo) setEstado({ urls, contador });
             });
         });
 
@@ -38,6 +39,8 @@ export function usePrecarga(urls) {
             activo = false;
         };
     }, [urls]);
+
+    const cargados = estado.urls === urls ? estado.contador : 0;
 
     const porcentaje = urls.length === 0
         ? 100
