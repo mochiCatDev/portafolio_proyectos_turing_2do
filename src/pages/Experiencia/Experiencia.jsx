@@ -37,7 +37,20 @@ function Experiencia() {
                             transition={{ duration: 0.8 }}
                         >
                             <div className="pagina-base">
-                                <p>Página introductoria (próximamente)</p>
+                                <motion.div
+                                    className="intro"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ duration: 0.8, delay: 2 }}
+                                >
+                                    <p className="intro-saludo">Bienvenido a mi portafolio</p>
+                                    <h2>Dilan Solorzano</h2>
+                                    <p className="intro-texto">
+                                        Desarrollador frontend. Aquí encontrarás los proyectos
+                                        en los que he trabajado.
+                                    </p>
+                                    <p className="intro-pista">Toca la esquina →</p>
+                                </motion.div>
                             </div>
                         
                             <motion.div

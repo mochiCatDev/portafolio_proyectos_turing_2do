@@ -112,3 +112,38 @@
   transform: rotateY(180deg);
   background: #e6d3a8;
 }
+
+.pagina-base {
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.intro-saludo {
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #8a6a3a;
+}
+
+.intro h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  color: #3a1a10;
+}
+
+.intro-texto {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.intro-pista {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  font-style: italic;
+  color: #8a6a3a;
+}
