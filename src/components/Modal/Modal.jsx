@@ -1,16 +1,43 @@
+import { useState } from 'react';
 import './Modal.css';
 
 function Modal({ libro, onCerrar }) {
+    const [imagenCargada, setImagenCargada] = useState(true);
+
     return (
         <div className="modal-fondo" onClick={onCerrar}>
-            <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-panel" onClick={(e) => e.stopPropagation()}>
                 <button className="modal-cerrar" onClick={onCerrar} aria-label="Cerrar">
                     ×
                 </button>
-                <div className="modal-cuerpo">
+
+                <div className="modal-contenido">
                     <h2 className="modal-titulo">{libro.titulo}</h2>
-                    <p className="modal-descripcion">{libro.descripcion}</p>
-                    <p className="modal-tecnologias">{libro.tecnologias.join(' · ')}</p>
+                    <p className="modal-resumen">{libro.descripcion}</p>
+
+                    <div className="modal-imagen">
+                        {imagenCargada ? (
+                            <img
+                                src={libro.imagen}
+                                alt={`Imagen de ${libro.titulo}`}
+                                loading="lazy"
+                                onError={() => setImagenCargada(false)}
+                            />
+                        ) : (
+                            <span className="modal-imagen-texto">
+                                Imagen no disponible
+                            </span>
+                        )}
+                    </div>
+
+                    <a
+                        href={libro.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="modal-boton"
+                    >
+                        Entrar
+                    </a>
                 </div>
             </div>
         </div>
