@@ -396,7 +396,7 @@ function Libro({ cerrando, texturas }) {
     });
 
     return (
-        <group position={[xLomo, 0, 0]} rotation={[0.15, 0.4, 0]} scale={escala}>
+        <group position={[xLomo, 0, 0]} rotation={[0.15, 0.2, 0]} scale={escala}>
             {/* Tapa trasera */}
             <mesh position={[ANCHO / 2, 0, -mitad]} castShadow receiveShadow>
                 <boxGeometry args={[ANCHO, ALTO, GROSOR_TAPA]} />
