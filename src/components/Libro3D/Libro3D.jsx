@@ -34,7 +34,7 @@ const UMBRAL_TEXTO = 0.3; // progreso del giro (campana) a partir del cual el te
 const RANGO_TEXTO = 0.4; // ancho del desvanecimiento del texto
 const SIGNO_CURVA = 1; // la hoja gira hacia ángulos negativos, barriendo hacia +z;
 // el borde libre rezaga hacia -z, que con velocidad negativa exige signo positivo
-const CURVA_BASE_PAGINA = 0.05; // arco leve permanente de la hoja hacia el lado de la portada
+const CURVA_BASE_PAGINA = 0.06; // arco leve permanente de la hoja hundida hacia el lomo
 const RUGOSIDAD_TAPA = 0.7;
 const METALICIDAD_TAPA = 0.05;
 const RUGOSIDAD_PAPEL = 0.85;
@@ -159,6 +159,12 @@ function crearTexturas() {
     };
 }
 
+const PROPIEDADES_ORO = {
+    color: '#c9a15a',
+    metalness: 1,
+    roughness: 0.35,
+};
+
 function propiedadesCuero(texturas) {
     return {
         map: texturas.cuero,
@@ -212,7 +218,7 @@ function Hoja({ indice, pasada, activa, retrocedible, onPasar, onRetroceder, con
             const arregloInicial = posicionInicial.array;
             for (let i = 0; i < arregloInicial.length; i += 3) {
                 const relativo = (arregloInicial[i] + anchoHoja / 2) / anchoHoja;
-                arregloInicial[i + 2] += CURVA_BASE_PAGINA * relativo * relativo;
+                arregloInicial[i + 2] -= CURVA_BASE_PAGINA * Math.pow(1 - relativo, 2);
             }
             posicionInicial.needsUpdate = true;
             geometria.computeVertexNormals();
@@ -260,10 +266,10 @@ function Hoja({ indice, pasada, activa, retrocedible, onPasar, onRetroceder, con
         const opacidad = Math.min(1, Math.max(0, 1 - (campana - UMBRAL_TEXTO) / RANGO_TEXTO));
         if (opacidad !== opacidadRef.current) {
             opacidadRef.current = opacidad;
-            textoEtiquetaRef.current.fillOpacity = opacidad;
-            textoTituloRef.current.fillOpacity = opacidad;
-            textoCuerpoRef.current.fillOpacity = opacidad;
-            textoPieRef.current.fillOpacity = opacidad;
+            if (textoEtiquetaRef.current) textoEtiquetaRef.current.fillOpacity = opacidad;
+            if (textoTituloRef.current) textoTituloRef.current.fillOpacity = opacidad;
+            if (textoCuerpoRef.current) textoCuerpoRef.current.fillOpacity = opacidad;
+            if (textoPieRef.current) textoPieRef.current.fillOpacity = opacidad;
         }
     });
 
@@ -451,6 +457,24 @@ function Libro({ cerrando, texturas }) {
                     <boxGeometry args={[ANCHO, ALTO, GROSOR_TAPA]} />
                     <meshPhysicalMaterial {...propiedadesCuero(texturas)} />
                 </mesh>
+
+                {/* Marco dorado de la pasta */}
+                <mesh position={[ANCHO / 2, ALTO / 2 - 0.025, 0]}>
+                    <boxGeometry args={[ANCHO, 0.05, GROSOR_TAPA + 0.006]} />
+                    <meshStandardMaterial {...PROPIEDADES_ORO} />
+                </mesh>
+                <mesh position={[ANCHO / 2, -ALTO / 2 + 0.025, 0]}>
+                    <boxGeometry args={[ANCHO, 0.05, GROSOR_TAPA + 0.006]} />
+                    <meshStandardMaterial {...PROPIEDADES_ORO} />
+                </mesh>
+                <mesh position={[0.025, 0, 0]}>
+                    <boxGeometry args={[0.05, ALTO, GROSOR_TAPA + 0.006]} />
+                    <meshStandardMaterial {...PROPIEDADES_ORO} />
+                </mesh>
+                <mesh position={[ANCHO - 0.025, 0, 0]}>
+                    <boxGeometry args={[0.05, ALTO, GROSOR_TAPA + 0.006]} />
+                    <meshStandardMaterial {...PROPIEDADES_ORO} />
+                </mesh>
             </group>
         </group>
     );
@@ -483,7 +507,6 @@ function Libro3D({ onCerrar }) {
             <Canvas
                 className="libro-canvas"
                 camera={{ position: [0, 0, 5], fov: 45 }}
-                shadows="soft"
                 gl={{ toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.1 }}
             >
                 <Environment resolution={256} frames={1} background={false}>
@@ -493,26 +516,10 @@ function Libro3D({ onCerrar }) {
                     <Lightformer intensity={0.6} color="#a8c4ff" position={[4, 1, 2]} scale={[3, 3, 1]} />
                 </Environment>
                 <ambientLight intensity={0.2} />
-                <directionalLight
-                    color="#ffd9a0"
-                    intensity={2.2}
-                    position={[-3, 2, 4]}
-                    castShadow
-                    shadow-mapSize-width={1024}
-                    shadow-mapSize-height={1024}
-                    shadow-camera-left={-5}
-                    shadow-camera-right={5}
-                    shadow-camera-top={5}
-                    shadow-camera-bottom={-5}
-                    shadow-bias={-0.0005}
-                />
+                <directionalLight color="#ffd9a0" intensity={2.2} position={[-3, 2, 4]} />
                 <directionalLight color="#a8c4ff" intensity={0.35} position={[4, 1, 2]} />
                 <directionalLight color="#dbe9ff" intensity={1.1} position={[1.5, 3, -3.5]} />
                 <Libro cerrando={cerrando} texturas={texturas} />
-                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -ALTO / 2 - 0.2, 0]} receiveShadow>
-                    <planeGeometry args={[14, 14]} />
-                    <shadowMaterial transparent opacity={0.35} />
-                </mesh>
             </Canvas>
 
             <button className="boton-cerrar" onClick={cerrar}>
