@@ -1,7 +1,8 @@
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Text } from '@react-three/drei';
+import { Environment, Lightformer, Text } from '@react-three/drei';
 import { motion } from 'framer-motion';
+import * as THREE from 'three';
 import { proyectos } from '../../data/proyectos';
 import './Libro3D.css';
 
@@ -11,8 +12,8 @@ const GROSOR_TAPA = 0.04;
 const ESPACIO = 0.03;
 const TOTAL_HOJAS = proyectos.length + 1; // intro + proyectos
 const GROSOR_PAGINAS = (TOTAL_HOJAS + 1) * ESPACIO; // + contraportada
-const COLOR_TAPA = '#5b2a1a';
-const COLORES_HOJA = ['#f1e3c2', '#e9d8b0'];
+const COLOR_TAPA = '#1e3a8a';
+const COLORES_HOJA = ['#f5f0e6', '#ebe4d5'];
 const ANGULO_ABIERTO = -2.8;
 const ANGULO_HOJA = -2.8;
 const TIEMPO_CIERRE = 1800; // ms que dura la animación de cierre
@@ -33,12 +34,142 @@ const UMBRAL_TEXTO = 0.3; // progreso del giro (campana) a partir del cual el te
 const RANGO_TEXTO = 0.4; // ancho del desvanecimiento del texto
 const SIGNO_CURVA = 1; // la hoja gira hacia ángulos negativos, barriendo hacia +z;
 // el borde libre rezaga hacia -z, que con velocidad negativa exige signo positivo
+const CURVA_BASE_PAGINA = 0.05; // arco leve permanente de la hoja hacia el lado de la portada
+const RUGOSIDAD_TAPA = 0.7;
+const METALICIDAD_TAPA = 0.05;
+const RUGOSIDAD_PAPEL = 0.85;
 
 function pasoResorte(resorte, objetivo, delta) {
     const aceleracion = RIGIDEZ * (objetivo - resorte.angulo) - AMORTIGUACION * resorte.velocidad;
     resorte.velocidad += aceleracion * delta;
     resorte.angulo += resorte.velocidad * delta;
     return resorte.angulo;
+}
+
+function crearLienzoCuero() {
+    const lienzo = document.createElement('canvas');
+    lienzo.width = 512;
+    lienzo.height = 512;
+    const ctx = lienzo.getContext('2d');
+    ctx.fillStyle = COLOR_TAPA;
+    ctx.fillRect(0, 0, 512, 512);
+    for (let i = 0; i < 14000; i++) {
+        const x = Math.random() * 512;
+        const y = Math.random() * 512;
+        ctx.fillStyle = Math.random() > 0.5
+            ? `rgba(10, 20, 60, ${0.04 + Math.random() * 0.08})`
+            : `rgba(110, 150, 215, ${0.03 + Math.random() * 0.07})`;
+        ctx.fillRect(x, y, 1 + Math.random() * 2, 1 + Math.random() * 2);
+    }
+    for (let i = 0; i < 60; i++) {
+        const x = Math.random() * 512;
+        const y = Math.random() * 512;
+        const radio = 20 + Math.random() * 60;
+        const degradado = ctx.createRadialGradient(x, y, 0, x, y, radio);
+        degradado.addColorStop(0, `rgba(12, 24, 70, ${0.08 + Math.random() * 0.06})`);
+        degradado.addColorStop(1, 'rgba(12, 24, 70, 0)');
+        ctx.fillStyle = degradado;
+        ctx.beginPath();
+        ctx.arc(x, y, radio, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    return lienzo;
+}
+
+function crearLienzoBumpCuero() {
+    const lienzo = document.createElement('canvas');
+    lienzo.width = 512;
+    lienzo.height = 512;
+    const ctx = lienzo.getContext('2d');
+    ctx.fillStyle = '#808080';
+    ctx.fillRect(0, 0, 512, 512);
+    for (let i = 0; i < 16000; i++) {
+        const x = Math.random() * 512;
+        const y = Math.random() * 512;
+        const gris = 100 + Math.floor(Math.random() * 110);
+        ctx.fillStyle = `rgba(${gris}, ${gris}, ${gris}, ${0.3 + Math.random() * 0.5})`;
+        ctx.fillRect(x, y, 1 + Math.random() * 2, 1 + Math.random() * 2);
+    }
+    return lienzo;
+}
+
+function crearLienzoRugosidadCuero() {
+    const lienzo = document.createElement('canvas');
+    lienzo.width = 256;
+    lienzo.height = 256;
+    const ctx = lienzo.getContext('2d');
+    ctx.fillStyle = '#b3b3b3';
+    ctx.fillRect(0, 0, 256, 256);
+    for (let i = 0; i < 9000; i++) {
+        const x = Math.random() * 256;
+        const y = Math.random() * 256;
+        const gris = 150 + Math.floor(Math.random() * 70);
+        ctx.fillStyle = `rgba(${gris}, ${gris}, ${gris}, ${0.25 + Math.random() * 0.4})`;
+        ctx.fillRect(x, y, 1 + Math.random() * 3, 1 + Math.random() * 3);
+    }
+    return lienzo;
+}
+
+function crearLienzosCantos() {
+    const color = document.createElement('canvas');
+    const bump = document.createElement('canvas');
+    color.width = 256;
+    color.height = 256;
+    bump.width = 256;
+    bump.height = 256;
+    const ctxColor = color.getContext('2d');
+    const ctxBump = bump.getContext('2d');
+    const tonos = ['#f5f0e6', '#ebe4d5', '#f8f4ec', '#e6ddca'];
+    for (let y = 0; y < 256; ) {
+        const altura = 1 + Math.floor(Math.random() * 3);
+        const tono = tonos[Math.floor(Math.random() * tonos.length)];
+        ctxColor.fillStyle = tono;
+        ctxColor.fillRect(0, y, 256, altura);
+        const gris = 110 + Math.floor(Math.random() * 90);
+        ctxBump.fillStyle = `rgb(${gris}, ${gris}, ${gris})`;
+        ctxBump.fillRect(0, y, 256, altura);
+        y += altura;
+    }
+    for (let i = 0; i < 800; i++) {
+        const x = Math.random() * 256;
+        const y = Math.random() * 256;
+        ctxColor.fillStyle = `rgba(120, 100, 70, ${0.04 + Math.random() * 0.05})`;
+        ctxColor.fillRect(x, y, 1 + Math.random() * 4, 1);
+    }
+    return { color, bump };
+}
+
+function texturaCanvas(lienzo, esColor, repeticion) {
+    const textura = new THREE.CanvasTexture(lienzo);
+    textura.wrapS = THREE.RepeatWrapping;
+    textura.wrapT = THREE.RepeatWrapping;
+    textura.repeat.set(repeticion[0], repeticion[1]);
+    if (esColor) textura.colorSpace = THREE.SRGBColorSpace;
+    return textura;
+}
+
+function crearTexturas() {
+    const { color: cantosColor, bump: cantosBumpLienzo } = crearLienzosCantos();
+    return {
+        cuero: texturaCanvas(crearLienzoCuero(), true, [2, 1.5]),
+        cueroBump: texturaCanvas(crearLienzoBumpCuero(), false, [2, 1.5]),
+        cueroRugosidad: texturaCanvas(crearLienzoRugosidadCuero(), false, [2, 1.5]),
+        cantos: texturaCanvas(cantosColor, true, [1, 1]),
+        cantosBump: texturaCanvas(cantosBumpLienzo, false, [1, 1]),
+    };
+}
+
+function propiedadesCuero(texturas) {
+    return {
+        map: texturas.cuero,
+        bumpMap: texturas.cueroBump,
+        bumpScale: 0.35,
+        roughnessMap: texturas.cueroRugosidad,
+        roughness: RUGOSIDAD_TAPA,
+        metalness: METALICIDAD_TAPA,
+        clearcoat: 0.15,
+        clearcoatRoughness: 0.6,
+    };
 }
 
 const CONTENIDO = [
@@ -77,7 +208,15 @@ function Hoja({ indice, pasada, activa, retrocedible, onPasar, onRetroceder, con
     useFrame((_, deltaBruto) => {
         const geometria = geometriaRef.current;
         if (originalesRef.current === null) {
-            originalesRef.current = geometria.attributes.position.array.slice();
+            const posicionInicial = geometria.attributes.position;
+            const arregloInicial = posicionInicial.array;
+            for (let i = 0; i < arregloInicial.length; i += 3) {
+                const relativo = (arregloInicial[i] + anchoHoja / 2) / anchoHoja;
+                arregloInicial[i + 2] += CURVA_BASE_PAGINA * relativo * relativo;
+            }
+            posicionInicial.needsUpdate = true;
+            geometria.computeVertexNormals();
+            originalesRef.current = arregloInicial.slice();
         }
         const delta = Math.min(deltaBruto, 1 / 30);
         const resorte = resorteRef.current;
@@ -152,9 +291,9 @@ function Hoja({ indice, pasada, activa, retrocedible, onPasar, onRetroceder, con
                 document.body.style.cursor = 'auto';
             }}
         >
-            <mesh position={[ANCHO / 2, 0, 0]}>
+            <mesh position={[ANCHO / 2, 0, 0]} castShadow receiveShadow>
                 <boxGeometry ref={geometriaRef} args={[anchoHoja, ALTO - 0.1, GROSOR_HOJA, SEGMENTOS_HOJA]} />
-                <meshStandardMaterial color={COLORES_HOJA[indice % 2]} />
+                <meshStandardMaterial color={COLORES_HOJA[indice % 2]} roughness={RUGOSIDAD_PAPEL} />
             </mesh>
 
             <Suspense fallback={null}>
@@ -216,7 +355,7 @@ function Hoja({ indice, pasada, activa, retrocedible, onPasar, onRetroceder, con
     );
 }
 
-function Libro({ cerrando }) {
+function Libro({ cerrando, texturas }) {
     const viewport = useThree((estado) => estado.viewport);
     const escala = Math.min(
         ESCALA_MAX,
@@ -253,15 +392,15 @@ function Libro({ cerrando }) {
     return (
         <group position={[xLomo, 0, 0]} rotation={[0.15, 0.4, 0]} scale={escala}>
             {/* Tapa trasera */}
-            <mesh position={[ANCHO / 2, 0, -mitad]}>
+            <mesh position={[ANCHO / 2, 0, -mitad]} castShadow receiveShadow>
                 <boxGeometry args={[ANCHO, ALTO, GROSOR_TAPA]} />
-                <meshStandardMaterial color={COLOR_TAPA} />
+                <meshPhysicalMaterial {...propiedadesCuero(texturas)} />
             </mesh>
 
             {/* Contraportada: la última página, fija */}
-            <mesh position={[ANCHO / 2, 0, -GROSOR_PAGINAS / 2 + ESPACIO / 2]}>
+            <mesh position={[ANCHO / 2, 0, -GROSOR_PAGINAS / 2 + ESPACIO / 2]} castShadow receiveShadow>
                 <boxGeometry args={[ANCHO - 0.1, ALTO - 0.1, ESPACIO * 0.9]} />
-                <meshStandardMaterial color={COLORES_HOJA[TOTAL_HOJAS % 2]} />
+                <meshStandardMaterial color={COLORES_HOJA[TOTAL_HOJAS % 2]} roughness={RUGOSIDAD_PAPEL} />
             </mesh>
 
             {/* Hojas: intro + una por proyecto */}
@@ -278,17 +417,39 @@ function Libro({ cerrando }) {
                 />
             ))}
 
-            {/* Lomo */}
-            <mesh position={[0, 0, 0]}>
+            {/* Lomo: cuero azul en tapas y bordes, canto de páginas en la cara visible */}
+            <mesh position={[0, 0, 0]} castShadow receiveShadow>
                 <boxGeometry args={[GROSOR_TAPA, ALTO, GROSOR_PAGINAS + GROSOR_TAPA * 2]} />
-                <meshStandardMaterial color={COLOR_TAPA} />
+                <meshPhysicalMaterial attach="material-0" {...propiedadesCuero(texturas)} />
+                <meshPhysicalMaterial
+                    attach="material-1"
+                    map={texturas.cantos}
+                    bumpMap={texturas.cantosBump}
+                    bumpScale={0.5}
+                    roughness={0.8}
+                    metalness={0.02}
+                />
+                <meshPhysicalMaterial attach="material-2" {...propiedadesCuero(texturas)} />
+                <meshPhysicalMaterial attach="material-3" {...propiedadesCuero(texturas)} />
+                <meshPhysicalMaterial attach="material-4" {...propiedadesCuero(texturas)} />
+                <meshPhysicalMaterial attach="material-5" {...propiedadesCuero(texturas)} />
+            </mesh>
+
+            {/* Detalles dorados tenues en los bordes del lomo */}
+            <mesh position={[0, ALTO / 2 - 0.015, 0]} castShadow>
+                <boxGeometry args={[GROSOR_TAPA + 0.008, 0.03, GROSOR_PAGINAS + GROSOR_TAPA * 2 + 0.008]} />
+                <meshStandardMaterial color="#c9a15a" metalness={1} roughness={0.35} />
+            </mesh>
+            <mesh position={[0, -ALTO / 2 + 0.015, 0]} castShadow>
+                <boxGeometry args={[GROSOR_TAPA + 0.008, 0.03, GROSOR_PAGINAS + GROSOR_TAPA * 2 + 0.008]} />
+                <meshStandardMaterial color="#c9a15a" metalness={1} roughness={0.35} />
             </mesh>
 
             {/* Tapa delantera: el grupo es el pivote en el lomo */}
             <group ref={tapaRef} position={[0, 0, mitad]}>
-                <mesh position={[ANCHO / 2, 0, 0]}>
+                <mesh position={[ANCHO / 2, 0, 0]} castShadow receiveShadow>
                     <boxGeometry args={[ANCHO, ALTO, GROSOR_TAPA]} />
-                    <meshStandardMaterial color={COLOR_TAPA} />
+                    <meshPhysicalMaterial {...propiedadesCuero(texturas)} />
                 </mesh>
             </group>
         </group>
@@ -297,6 +458,11 @@ function Libro({ cerrando }) {
 
 function Libro3D({ onCerrar }) {
     const [cerrando, setCerrando] = useState(false);
+    const [texturas] = useState(crearTexturas);
+
+    useEffect(() => () => {
+        Object.values(texturas).forEach((textura) => textura.dispose());
+    }, [texturas]);
 
     const cerrar = () => {
         if (cerrando) return;
@@ -314,10 +480,39 @@ function Libro3D({ onCerrar }) {
                 transition={{ duration: 0.8 }}
             />
 
-            <Canvas className="libro-canvas" camera={{ position: [0, 0, 5], fov: 45 }}>
-                <ambientLight intensity={0.7} />
-                <directionalLight color="#ffd9a0" intensity={2.5} position={[-3, 2, 4]} />
-                <Libro cerrando={cerrando} />
+            <Canvas
+                className="libro-canvas"
+                camera={{ position: [0, 0, 5], fov: 45 }}
+                shadows="soft"
+                gl={{ toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.1 }}
+            >
+                <Environment resolution={256} frames={1} background={false}>
+                    <color attach="background" args={['#111827']} />
+                    <Lightformer intensity={2.2} color="#ffd9a0" position={[-3, 2, 4]} scale={[4, 4, 1]} />
+                    <Lightformer intensity={1.2} color="#ffffff" position={[0, 5, -3]} scale={[6, 3, 1]} />
+                    <Lightformer intensity={0.6} color="#a8c4ff" position={[4, 1, 2]} scale={[3, 3, 1]} />
+                </Environment>
+                <ambientLight intensity={0.2} />
+                <directionalLight
+                    color="#ffd9a0"
+                    intensity={2.2}
+                    position={[-3, 2, 4]}
+                    castShadow
+                    shadow-mapSize-width={1024}
+                    shadow-mapSize-height={1024}
+                    shadow-camera-left={-5}
+                    shadow-camera-right={5}
+                    shadow-camera-top={5}
+                    shadow-camera-bottom={-5}
+                    shadow-bias={-0.0005}
+                />
+                <directionalLight color="#a8c4ff" intensity={0.35} position={[4, 1, 2]} />
+                <directionalLight color="#dbe9ff" intensity={1.1} position={[1.5, 3, -3.5]} />
+                <Libro cerrando={cerrando} texturas={texturas} />
+                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -ALTO / 2 - 0.2, 0]} receiveShadow>
+                    <planeGeometry args={[14, 14]} />
+                    <shadowMaterial transparent opacity={0.35} />
+                </mesh>
             </Canvas>
 
             <button className="boton-cerrar" onClick={cerrar}>
