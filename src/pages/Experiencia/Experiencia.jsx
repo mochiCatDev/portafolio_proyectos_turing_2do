@@ -13,7 +13,6 @@ function Experiencia() {
                     src="/videos/fondo.mp4"
                     autoPlay
                     muted
-                    loop
                     playsInline
                     disablePictureInPicture
                 />
