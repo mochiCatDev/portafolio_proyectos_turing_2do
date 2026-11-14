@@ -1,13 +1,13 @@
 .modal-fondo {
     position: fixed;
     inset: 0;
-    background: rgba(5, 5, 5, 0.45);
-    backdrop-filter: blur(6px);
+    background: rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(4px);
     z-index: 70;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    padding: 32px;
+    padding: 32px 24px 32px 0;
     box-sizing: border-box;
     animation: modalFondoEntrada 0.25s ease;
 }
@@ -21,21 +21,25 @@
     }
 }
 
+/* Panel anclado al lado derecho del viewport, fuera de la estantería */
 .modal-panel {
-    position: relative;
-    width: min(440px, 90vw);
-    height: 100vh;
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: min(440px, 92vw);
     max-height: 100vh;
     background:
         linear-gradient(180deg, #f5f0e6 0%, #e9d8b0 100%);
     border-left: 1px solid #c9a15a;
     box-shadow:
-        -14px 0 40px rgba(0, 0, 0, 0.45),
-        inset 1px 0 0 rgba(255, 255, 255, 0.6);
+        -14px 0 45px rgba(0, 0, 0, 0.5),
+        inset 1px 0 0 rgba(255, 255, 255, 0.7);
     display: flex;
     flex-direction: column;
-    animation: modalPanelEntrada 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation: modalPanelEntrada 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     overflow-y: auto;
+    z-index: 71;
 }
 
 @keyframes modalPanelEntrada {
@@ -51,26 +55,26 @@
 
 .modal-cerrar {
     position: absolute;
-    top: 18px;
-    left: 18px;
-    background: transparent;
-    border: 1px solid #8a6a3a;
-    color: #5b2a1a;
-    width: 36px;
-    height: 36px;
+    top: 20px;
+    left: -42px;
+    background: #5b2a1a;
+    border: 2px solid #c9a15a;
+    color: #f5f0e6;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 24px;
+    font-size: 26px;
     line-height: 1;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     z-index: 5;
 }
 
 .modal-cerrar:hover {
-    background: #8a6a3a;
-    color: #f5f0e6;
+    background: #7a3d24;
 }
 
 .modal-contenido {

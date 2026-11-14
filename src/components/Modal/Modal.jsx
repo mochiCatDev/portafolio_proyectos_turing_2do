@@ -6,7 +6,7 @@ function Modal({ libro, onCerrar }) {
 
     return (
         <div className="modal-fondo" onClick={onCerrar}>
-            <div className="modal-panel" onClick={(e) => e.stopPropagation()}>
+            <aside className="modal-panel" onClick={(e) => e.stopPropagation()}>
                 <button className="modal-cerrar" onClick={onCerrar} aria-label="Cerrar">
                     ×
                 </button>
@@ -39,7 +39,7 @@ function Modal({ libro, onCerrar }) {
                         Entrar
                     </a>
                 </div>
-            </div>
+            </aside>
         </div>
     );
 }
