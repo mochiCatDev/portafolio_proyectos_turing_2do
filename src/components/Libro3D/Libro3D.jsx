@@ -31,7 +31,7 @@ const CONTENIDO = [
     })),
 ];
 
-function Hoja({ indice, pasada, activa, onPasar, contenido }) {
+function Hoja({ indice, pasada, activa, retrocedible, onPasar, onRetroceder, contenido }) {
     const grupoRef = useRef();
     // La hoja 0 es la más cercana a la tapa delantera
     const z = GROSOR_PAGINAS / 2 - ESPACIO / 2 - indice * ESPACIO;
@@ -50,10 +50,15 @@ function Hoja({ indice, pasada, activa, onPasar, contenido }) {
     });
 
     const manejarClick = (e) => {
-        if (!activa) return;
-        e.stopPropagation();
-        document.body.style.cursor = 'auto';
-        onPasar();
+        if (activa) {
+            e.stopPropagation();
+            document.body.style.cursor = 'auto';
+            onPasar();
+        } else if (retrocedible) {
+            e.stopPropagation();
+            document.body.style.cursor = 'auto';
+            onRetroceder();
+        }
     };
 
     return (
@@ -62,7 +67,7 @@ function Hoja({ indice, pasada, activa, onPasar, contenido }) {
             position={[0, 0, z]}
             onClick={manejarClick}
             onPointerOver={() => {
-                if (activa) document.body.style.cursor = 'pointer';
+                if (activa || retrocedible) document.body.style.cursor = 'pointer';
             }}
             onPointerOut={() => {
                 document.body.style.cursor = 'auto';
@@ -165,7 +170,9 @@ function Libro() {
                     contenido={contenido}
                     pasada={i < paginaActual}
                     activa={abierta && i === paginaActual}
+                    retrocedible={i === paginaActual - 1}
                     onPasar={() => setPaginaActual(i + 1)}
+                    onRetroceder={() => setPaginaActual(i)}
                 />
             ))}
 
