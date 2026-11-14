@@ -1,15 +1,32 @@
 import { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { MathUtils } from 'three';
+import { proyectos } from '../../data/proyectos';
 import './Libro3D.css';
 
 const ANCHO = 1.5;
 const ALTO = 2;
 const GROSOR_TAPA = 0.04;
-const GROSOR_PAGINAS = 0.2;
+const ESPACIO = 0.03;
+const TOTAL_HOJAS = proyectos.length + 1; // intro + proyectos
+const GROSOR_PAGINAS = (TOTAL_HOJAS + 1) * ESPACIO; // + contraportada
 const COLOR_TAPA = '#5b2a1a';
-const COLOR_PAGINAS = '#f1e3c2';
+const COLORES_HOJA = ['#f1e3c2', '#e9d8b0'];
 const ANGULO_ABIERTO = -2.8;
+
+function Hoja({ indice }) {
+    // La hoja 0 es la más cercana a la tapa delantera
+    const z = GROSOR_PAGINAS / 2 - ESPACIO / 2 - indice * ESPACIO;
+
+    return (
+        <group position={[0, 0, z]}>
+            <mesh position={[ANCHO / 2, 0, 0]}>
+                <boxGeometry args={[ANCHO - 0.1, ALTO - 0.1, ESPACIO * 0.9]} />
+                <meshStandardMaterial color={COLORES_HOJA[indice % 2]} />
+            </mesh>
+        </group>
+    );
+}
 
 function Libro() {
     const mitad = GROSOR_PAGINAS / 2 + GROSOR_TAPA / 2;
@@ -39,11 +56,16 @@ function Libro() {
                 <meshStandardMaterial color={COLOR_TAPA} />
             </mesh>
 
-            {/* Bloque de páginas */}
-            <mesh position={[ANCHO / 2, 0, 0]}>
-                <boxGeometry args={[ANCHO - 0.1, ALTO - 0.1, GROSOR_PAGINAS]} />
-                <meshStandardMaterial color={COLOR_PAGINAS} />
+            {/* Contraportada: la última página, fija */}
+            <mesh position={[ANCHO / 2, 0, -GROSOR_PAGINAS / 2 + ESPACIO / 2]}>
+                <boxGeometry args={[ANCHO - 0.1, ALTO - 0.1, ESPACIO * 0.9]} />
+                <meshStandardMaterial color={COLORES_HOJA[TOTAL_HOJAS % 2]} />
             </mesh>
+
+            {/* Hojas: intro + una por proyecto */}
+            {Array.from({ length: TOTAL_HOJAS }, (_, i) => (
+                <Hoja key={i} indice={i} />
+            ))}
 
             {/* Lomo */}
             <mesh position={[0, 0, 0]}>
