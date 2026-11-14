@@ -1,12 +1,14 @@
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import './Inicio.css';
 import { mensajeInicio } from "../../data/mensajesSencillos";
 import MaquinaDeEscribir from "../../components/MaquinaDeEscribirMultiple/MaquinaDeEscribirMultiple";
+import { usePrecarga } from "../../hooks/usePrecarga";
+import chica from "../../assets/inicio/chica.png";
+
+const RECURSOS = [chica, '/videos/fondo.mp4'];
 
 function Inicio() {
-    const [porcentajeRecursos, setPorcentajeRecursos] = useState(100);
-    const [recursosCargados, setRecursosCargados] = useState(true);
+    const { porcentaje, completo } = usePrecarga(RECURSOS);
     const navigate = useNavigate();
     const manejarButtonIngresar = () => navigate('/experiencia');
 
@@ -19,20 +21,20 @@ function Inicio() {
 
                 <div
                     className='porcentaje-recursos'
-                    style={{ color: porcentajeRecursos >= 100 ? 'green' : 'inherit' }}
+                    style={{ color: completo ? 'green' : 'inherit' }}
                 >
-                    <span>{porcentajeRecursos}</span>/100
+                    <span>{porcentaje}</span>/100
                 </div>
 
                 <button
-                    disabled={!recursosCargados}
+                    disabled={!completo}
                     onClick={manejarButtonIngresar}
                 >
                     Ingresar
                 </button>
             </div>
 
-            <img src="/src/assets/inicio/chica.png" className="imagen" />
+            <img src={chica} className="imagen" />
         </div>
     );
 }
