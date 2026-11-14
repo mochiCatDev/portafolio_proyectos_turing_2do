@@ -1,5 +1,26 @@
+.fondo-libro {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.6);
+}
+
 .libro-canvas {
   position: absolute !important;
   inset: 0;
   z-index: 11;
+}
+
+.boton-cerrar {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 12;
+  padding: 8px 18px;
+  color: #f1e3c2;
+  font-family: Georgia, 'Times New Roman', serif;
+  cursor: pointer;
+  background: rgba(58, 26, 16, 0.85);
+  border: 1px solid #c9a15a;
+  border-radius: 8px;
 }

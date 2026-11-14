@@ -26,7 +26,7 @@ function Experiencia() {
                 />
             </div>
 
-            {libroAbierto && <Libro3D />}
+            {libroAbierto && <Libro3D onCerrar={() => setLibroAbierto(false)} />}
         </main>
     );
 }

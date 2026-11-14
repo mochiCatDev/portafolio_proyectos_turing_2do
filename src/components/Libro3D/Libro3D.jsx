@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
+import { motion } from 'framer-motion';
 import { MathUtils } from 'three';
 import { proyectos } from '../../data/proyectos';
 import './Libro3D.css';
@@ -15,6 +16,7 @@ const COLOR_TAPA = '#5b2a1a';
 const COLORES_HOJA = ['#f1e3c2', '#e9d8b0'];
 const ANGULO_ABIERTO = -2.8;
 const ANGULO_HOJA = -2.8;
+const TIEMPO_CIERRE = 1800; // ms que dura la animación de cierre
 
 const CONTENIDO = [
     {
@@ -127,11 +129,15 @@ function Hoja({ indice, pasada, activa, retrocedible, onPasar, onRetroceder, con
     );
 }
 
-function Libro() {
+function Libro({ cerrando }) {
     const mitad = GROSOR_PAGINAS / 2 + GROSOR_TAPA / 2;
     const tapaRef = useRef();
     const [abierta, setAbierta] = useState(false);
     const [paginaActual, setPaginaActual] = useState(0);
+
+    // Al cerrar, todo apunta al estado "cerrado" y las animaciones hacen el resto
+    const abiertaVisible = abierta && !cerrando;
+    const pagina = cerrando ? 0 : paginaActual;
 
     useEffect(() => {
         const temporizador = setTimeout(() => setAbierta(true), 1000);
@@ -139,7 +145,7 @@ function Libro() {
     }, []);
 
     useFrame((_, delta) => {
-        const objetivo = abierta ? ANGULO_ABIERTO : 0;
+        const objetivo = abiertaVisible ? ANGULO_ABIERTO : 0;
         tapaRef.current.rotation.y = MathUtils.damp(
             tapaRef.current.rotation.y,
             objetivo,
@@ -168,9 +174,9 @@ function Libro() {
                     key={i}
                     indice={i}
                     contenido={contenido}
-                    pasada={i < paginaActual}
-                    activa={abierta && i === paginaActual}
-                    retrocedible={i === paginaActual - 1}
+                    pasada={i < pagina}
+                    activa={abiertaVisible && i === pagina}
+                    retrocedible={!cerrando && i === pagina - 1}
                     onPasar={() => setPaginaActual(i + 1)}
                     onRetroceder={() => setPaginaActual(i)}
                 />
@@ -193,13 +199,35 @@ function Libro() {
     );
 }
 
-function Libro3D() {
+function Libro3D({ onCerrar }) {
+    const [cerrando, setCerrando] = useState(false);
+
+    const cerrar = () => {
+        if (cerrando) return;
+        document.body.style.cursor = 'auto';
+        setCerrando(true);
+        setTimeout(onCerrar, TIEMPO_CIERRE);
+    };
+
     return (
-        <Canvas className="libro-canvas" camera={{ position: [0, 0, 5], fov: 45 }}>
-            <ambientLight intensity={1.2} />
-            <directionalLight position={[3, 3, 5]} intensity={2} />
-            <Libro />
-        </Canvas>
+        <>
+            <motion.div
+                className="fondo-libro"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: cerrando ? 0 : 1 }}
+                transition={{ duration: 0.8 }}
+            />
+
+            <Canvas className="libro-canvas" camera={{ position: [0, 0, 5], fov: 45 }}>
+                <ambientLight intensity={1.2} />
+                <directionalLight position={[3, 3, 5]} intensity={2} />
+                <Libro cerrando={cerrando} />
+            </Canvas>
+
+            <button className="boton-cerrar" onClick={cerrar}>
+                Cerrar
+            </button>
+        </>
     );
 }
 
