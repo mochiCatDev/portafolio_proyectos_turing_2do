@@ -1,0 +1,13 @@
+.inicio {
+    display: flex;
+    flex-direction: column;
+    background-color: #000;
+    color: #fff;
+    height: 100dvh;
+    width: 100%;
+    padding: 10px;
+}
+
+.inicio button {
+    width: 10%;
+}
