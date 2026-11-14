@@ -10,12 +10,11 @@
     align-items: center;
     justify-content: center;
     background: #1a1410;
-    /* Sombra que proyecta hacia la derecha sobre el contenido */
-    box-shadow: inset -12px 0 40px rgba(0, 0, 0, 0.55),
-                20px 0 50px rgba(0, 0, 0, 0.65);
-    /* Entrada suave y deslizante desde la izquierda hacia la derecha */
+    box-shadow:
+        inset -10px 0 30px rgba(0, 0, 0, 0.6),
+        20px 0 50px rgba(0, 0, 0, 0.7);
     transform: translateX(-100%);
-    animation: entrarDeslizante 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation: entrarDeslizante 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     overflow: hidden;
 }
 
@@ -32,38 +31,32 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* Marco de madera realista con veta */
     background:
-        linear-gradient(180deg, #2b1e16 0%, #4a3728 25%, #3e2b1e 60%, #2b1e16 100%),
-        repeating-linear-gradient(90deg, transparent, transparent 9px, rgba(0, 0, 0, 0.25) 11px),
-        linear-gradient(90deg, #6b4f3f, #4a3728);
-    background-blend-mode: overlay, normal, normal;
-    border-left: 8px solid #1a110c;
-    border-right: 8px solid #221810;
+        linear-gradient(180deg, #2b1e16 0%, #4a3728 20%, #5d4037 50%, #4a3728 80%, #2b1e16 100%);
+    border-left: 10px solid #1a110c;
+    border-right: 10px solid #221810;
 }
 
 .estanteria-marco::before {
-    /* Reflejo de luz superior (brillo orgánico) */
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 70px;
-    background: linear-gradient(to bottom, rgba(255, 244, 220, 0.35), transparent 70%);
+    height: 60px;
+    background: linear-gradient(to bottom, rgba(255, 244, 220, 0.3), transparent 60%);
     pointer-events: none;
     z-index: 2;
 }
 
 .estanteria-marco::after {
-    /* Oscurecimiento inferior para dar profundidad */
     content: '';
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 90px;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.45), transparent 90%);
+    height: 80px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent 80%);
     pointer-events: none;
     z-index: 2;
 }
@@ -71,24 +64,25 @@
 .moldura-superior,
 .moldura-inferior {
     position: absolute;
-    left: 12px;
-    right: 12px;
-    height: 14px;
+    left: 14px;
+    right: 14px;
+    height: 16px;
     background:
-        linear-gradient(180deg, #3e2b1e, #5d4037, #3e2b1e),
-        linear-gradient(90deg, #4a3728 50%, transparent 50%);
+        linear-gradient(180deg, #3e2b1e, #5d4037, #3e2b1e);
     border: 2px solid #1a110c;
-    box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.15);
+    box-shadow:
+        inset 0 2px 4px rgba(255, 255, 255, 0.15),
+        0 2px 4px rgba(0, 0, 0, 0.4);
     z-index: 3;
 }
 
 .moldura-superior {
-    top: 12px;
+    top: 14px;
     border-radius: 3px 3px 0 0;
 }
 
 .moldura-inferior {
-    bottom: 12px;
+    bottom: 14px;
     border-radius: 0 0 3px 3px;
 }
 
@@ -97,15 +91,14 @@
     z-index: 1;
     width: 100%;
     height: 100%;
-    padding: 70px 20px 90px 20px;
+    padding: 90px 18px 100px 18px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: 22px;
+    gap: 34px;
     overflow-y: auto;
 }
 
-/* Fondo interior del armario con veta de madera más clara */
 .estanteria-interior::before {
     content: '';
     position: absolute;
@@ -119,11 +112,41 @@
 }
 
 .estante {
+    position: relative;
     display: flex;
     align-items: flex-end;
     gap: 14px;
     justify-content: center;
-    padding-bottom: 16px;
+    height: 210px;
+    padding-bottom: 20px;
+    /* Tabla horizontal del estante con grosor y veta */
+    background:
+        linear-gradient(180deg, #8d6e63 0%, #a1887f 40%, #795548 100%);
+    border: 3px solid #4e342e;
+    border-radius: 4px 4px 0 0;
+    box-shadow:
+        inset 0 4px 8px rgba(255, 255, 255, 0.25),
+        inset 0 -4px 10px rgba(0, 0, 0, 0.5),
+        0 8px 20px rgba(0, 0, 0, 0.5);
+    overflow: visible;
+}
+
+.estante::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: -3px;
+    right: -3px;
+    height: 6px;
+    background: #5d4037;
+    border: 2px solid #4e342e;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.estante:nth-child(2) {
+    margin-top: 10px;
 }
 
 .libro {
@@ -138,27 +161,27 @@
     align-items: flex-end;
     justify-content: center;
     overflow: hidden;
-    transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
     transform-origin: bottom center;
-    /* Sombra del libro sobre el estante */
+    transform: rotate(var(--inclinacion, 0deg));
     box-shadow:
-        0 10px 20px rgba(0, 0, 0, 0.35),
+        0 8px 16px rgba(0, 0, 0, 0.4),
         inset 1px 0 0 rgba(255, 255, 255, 0.25),
         inset -1px 0 0 rgba(0, 0, 0, 0.4);
 }
 
 .libro:hover {
-    transform: translateY(-12px) scale(1.03);
+    transform: translateY(-14px) rotate(var(--inclinacion, 0deg)) scale(1.05);
     z-index: 5;
-    filter: brightness(1.25);
+    filter: brightness(1.3);
     box-shadow:
-        0 18px 30px rgba(0, 0, 0, 0.5),
+        0 20px 35px rgba(0, 0, 0, 0.55),
         inset 1px 0 0 rgba(255, 255, 255, 0.35),
         inset -1px 0 0 rgba(0, 0, 0, 0.4);
 }
 
 .libro:active {
-    transform: translateY(-6px) scale(1.01);
+    transform: translateY(-7px) rotate(var(--inclinacion, 0deg)) scale(1.02);
 }
 
 .libro-canto-superior,
@@ -191,7 +214,6 @@
     justify-content: center;
     padding: 10px 4px;
     box-sizing: border-box;
-    /* Veta sutil del lomo */
     background:
         repeating-linear-gradient(90deg, transparent, transparent 7px, rgba(0, 0, 0, 0.15) 9px),
         linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(0, 0, 0, 0.18));
@@ -242,18 +264,35 @@
     mix-blend-mode: overlay;
 }
 
+.espacio-vacio {
+    height: 120px;
+    min-height: 100px;
+    border: 2px dashed #8a6a3a;
+    border-radius: 6px;
+    background: rgba(201, 177, 150, 0.15);
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.25);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: #8a6a3a;
+    font-family: Georgia, serif;
+    font-style: italic;
+    opacity: 0.7;
+}
+
 .sombra-derecha {
     position: absolute;
     top: 0;
-    right: -24px;
-    width: 24px;
+    right: -22px;
+    width: 22px;
     height: 100%;
-    background: linear-gradient(to right, rgba(0, 0, 0, 0.7), transparent);
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.8), transparent);
     pointer-events: none;
     z-index: 4;
 }
 
-/* Barra de desplazamiento sutil */
 .estanteria-interior::-webkit-scrollbar {
     width: 6px;
 }
@@ -265,10 +304,12 @@
     border-radius: 3px;
 }
 
-/* Ajuste en pantallas muy pequeñas */
 @media (max-width: 768px) {
     .estanteria {
         width: 45vw;
         max-width: none;
+    }
+    .estante {
+        height: 190px;
     }
 }
