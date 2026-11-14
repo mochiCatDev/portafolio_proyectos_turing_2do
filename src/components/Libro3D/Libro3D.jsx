@@ -29,6 +29,8 @@ const ONDULACION = 0.12; // término senoidal para la S suave a lo largo del anc
 const ELEVACION = 0.12;
 const VELOCIDAD_DOBLEZ = 6;
 const PESO_PROGRESO = 0.6; // aporte del progreso del giro al doblez (máx a mitad de giro)
+const UMBRAL_TEXTO = 0.45; // doblez a partir del cual el texto empieza a desvanecerse
+const RANGO_TEXTO = 0.5; // ancho del desvanecimiento del texto
 const SIGNO_CURVA = 1; // la hoja gira hacia ángulos negativos, barriendo hacia +z;
 // el borde libre rezaga hacia -z, que con velocidad negativa exige signo positivo
 
@@ -116,7 +118,7 @@ function Hoja({ indice, pasada, activa, retrocedible, onPasar, onRetroceder, con
             geometria.computeVertexNormals();
         }
 
-        const opacidad = Math.max(0, 1 - doblezAbs * 2);
+        const opacidad = Math.min(1, Math.max(0, 1 - (doblezAbs - UMBRAL_TEXTO) / RANGO_TEXTO));
         if (opacidad !== opacidadRef.current) {
             opacidadRef.current = opacidad;
             textoEtiquetaRef.current.fillOpacity = opacidad;
