@@ -21,12 +21,12 @@
     }
 }
 
-/* Panel flotante anclado al lado derecho del viewport, centrado verticalmente */
+/* Panel flotante centrado en el 70% derecho que sobra de la estantería (izquierda 30%) */
 .modal-panel {
     position: fixed;
-    right: 40px;
+    left: 65vw; /* centro del espacio sobrante (30% + 35%) */
     top: 50%;
-    transform: translateY(-50%);
+    transform: translate(-50%, -50%);
     width: 400px;
     height: 560px;
     max-height: 90vh;
@@ -46,11 +46,11 @@
 
 @keyframes modalPanelEntrada {
     from {
-        transform: translateX(100%) translateY(-50%);
+        left: 100vw;
         opacity: 0;
     }
     to {
-        transform: translateX(0) translateY(-50%);
+        left: 65vw;
         opacity: 1;
     }
 }
