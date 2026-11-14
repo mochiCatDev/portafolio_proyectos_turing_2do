@@ -30,19 +30,27 @@ function Experiencia() {
                 {libroAbierto && (
                     <>
                         <motion.div
-                            className="fondo-libro"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                        />
-                        <motion.div
                             className="libro"
                             initial={{ opacity: 0, y: 40 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 40 }}
                             transition={{ duration: 0.8 }}
                         >
-                            <span>Mis Proyectos</span>
+                            <div className="pagina-base">
+                                <p>Página introductoria (próximamente)</p>
+                            </div>
+                        
+                            <motion.div
+                                className="tapa"
+                                initial={{ rotateY: 0 }}
+                                animate={{ rotateY: -160 }}
+                                transition={{ duration: 1.4, delay: 1, ease: 'easeInOut' }}
+                            >
+                                <div className="tapa-exterior">
+                                    <span>Mis Proyectos</span>
+                                </div>
+                                <div className="tapa-interior"></div>
+                            </motion.div>
                         </motion.div>
                     </>
                 )}
