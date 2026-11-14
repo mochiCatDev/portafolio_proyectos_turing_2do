@@ -1,5 +1,5 @@
 import { Suspense, useEffect, useRef, useState } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
 import { motion } from 'framer-motion';
 import { MathUtils } from 'three';
@@ -18,6 +18,9 @@ const ANGULO_ABIERTO = -2.8;
 const ANGULO_HOJA = -2.8;
 const TIEMPO_CIERRE = 1800; // ms que dura la animación de cierre
 const FUENTE = '/fonts/Lora-Regular.ttf';
+const OBJETIVO_ALTO = 0.68; // fracción del alto visible que ocupa el libro cerrado
+const MARGEN = 0.05; // margen de seguridad al abrir el libro
+const ESCALA_MAX = 2; // límite superior de escala en pantallas muy grandes
 
 const CONTENIDO = [
     {
@@ -137,6 +140,18 @@ function Hoja({ indice, pasada, activa, retrocedible, onPasar, onRetroceder, con
 }
 
 function Libro({ cerrando }) {
+    const viewport = useThree((estado) => estado.viewport);
+    const escala = Math.min(
+        ESCALA_MAX,
+        (viewport.height * OBJETIVO_ALTO) / ALTO,
+        (viewport.width * (1 - MARGEN * 2)) / (ANCHO * 2),
+        (viewport.height * (1 - MARGEN * 2)) / ALTO
+    );
+    const esMovil = viewport.aspect < 1;
+    const xLomo = esMovil
+        ? 0
+        : -viewport.width / 2 + ANCHO * escala + MARGEN * viewport.width / 2;
+
     const mitad = GROSOR_PAGINAS / 2 + GROSOR_TAPA / 2;
     const tapaRef = useRef();
     const [abierta, setAbierta] = useState(false);
@@ -162,7 +177,7 @@ function Libro({ cerrando }) {
     });
 
     return (
-        <group position={[-2, 0, 0]} rotation={[0.15, 0.4, 0]}>
+        <group position={[xLomo, 0, 0]} rotation={[0.15, 0.4, 0]} scale={escala}>
             {/* Tapa trasera */}
             <mesh position={[ANCHO / 2, 0, -mitad]}>
                 <boxGeometry args={[ANCHO, ALTO, GROSOR_TAPA]} />
