@@ -186,12 +186,63 @@ const CONTENIDO = [
         pie: 'Toca la hoja para pasar →',
     },
     ...proyectos.map((p) => ({
+        esProyecto: true,
         etiqueta: `PROYECTO ${p.id}`,
         titulo: p.titulo,
         texto: p.descripcion,
+        imagen: p.imagen,
+        url: p.url,
         pie: p.tecnologias.join(' · '),
     })),
 ];
+
+function ImagenHoja({ url, posicion, ancho, alto }) {
+    const [textura] = useState(() => {
+        const cargador = new THREE.TextureLoader();
+        const t = cargador.load(url);
+        t.colorSpace = THREE.SRGBColorSpace;
+        return t;
+    });
+    const [lista, setLista] = useState(false);
+
+    useEffect(() => {
+        const alCargar = () => setLista(true);
+        textura.addEventListener('load', alCargar);
+        return () => textura.removeEventListener('load', alCargar);
+    }, [textura]);
+
+    return (
+        <mesh position={posicion} visible={lista}>
+            <planeGeometry args={[ancho, alto]} />
+            <meshStandardMaterial map={textura} roughness={0.9} />
+        </mesh>
+    );
+}
+
+function BotonEntrar({ url, posicion, activo }) {
+    const manejarClick = (e) => {
+        e.stopPropagation();
+        if (activo && url) window.open(url, '_blank', 'noopener');
+    };
+
+    return (
+        <group position={posicion} onClick={manejarClick}>
+            <mesh>
+                <boxGeometry args={[0.55, 0.16, 0.012]} />
+                <meshStandardMaterial {...PROPIEDADES_ORO} />
+            </mesh>
+            <Text
+                fontSize={0.07}
+                color="#1e3a8a"
+                anchorX="center"
+                anchorY="middle"
+                position={[0, 0, 0.008]}
+            >
+                Entrar
+            </Text>
+        </group>
+    );
+}
 
 function Hoja({ indice, pasada, activa, retrocedible, onPasar, onRetroceder, contenido }) {
     const grupoRef = useRef();
@@ -206,7 +257,7 @@ function Hoja({ indice, pasada, activa, retrocedible, onPasar, onRetroceder, con
     const opacidadRef = useRef(1);
     // La hoja 0 es la más cercana a la tapa delantera
     const z = GROSOR_PAGINAS / 2 - ESPACIO / 2 - indice * ESPACIO;
-    const zTexto = GROSOR_HOJA / 2 + 0.006; // separación extra para evitar el duplicado por z-fighting
+    const zTexto = GROSOR_HOJA / 2 + 0.015; // separación amplia para evitar el duplicado por z-fighting
     const xTexto = 0.2;
     const anchoTexto = ANCHO - 0.4;
     const anchoHoja = ANCHO - 0.1;
@@ -303,59 +354,105 @@ function Hoja({ indice, pasada, activa, retrocedible, onPasar, onRetroceder, con
             </mesh>
 
             <Suspense fallback={null}>
-                <Text
-                    ref={textoEtiquetaRef}
-                    font={FUENTE}
-                    position={[xTexto, 0.82, zTexto]}
-                    fontSize={0.05}
-                    letterSpacing={0.1}
-                    color="#8a6a3a"
-                    anchorX="left"
-                    anchorY="top"
-                    maxWidth={anchoTexto}
-                >
-                    {contenido.etiqueta}
-                </Text>
+                {contenido.esProyecto ? (
+                    <>
+                        <Text
+                            ref={textoTituloRef}
+                            font={FUENTE}
+                            position={[xTexto, 0.85, zTexto]}
+                            fontSize={0.11}
+                            color="#3a1a10"
+                            anchorX="left"
+                            anchorY="top"
+                            maxWidth={anchoTexto}
+                        >
+                            {contenido.titulo}
+                        </Text>
 
-                <Text
-                    ref={textoTituloRef}
-                    font={FUENTE}
-                    position={[xTexto, 0.7, zTexto]}
-                    fontSize={0.13}
-                    color="#3a1a10"
-                    anchorX="left"
-                    anchorY="top"
-                    maxWidth={anchoTexto}
-                >
-                    {contenido.titulo}
-                </Text>
+                        <Text
+                            ref={textoCuerpoRef}
+                            font={FUENTE}
+                            position={[xTexto, 0.68, zTexto]}
+                            fontSize={0.06}
+                            lineHeight={1.35}
+                            color="#3a2a1a"
+                            anchorX="left"
+                            anchorY="top"
+                            maxWidth={anchoTexto}
+                        >
+                            {contenido.texto}
+                        </Text>
 
-                <Text
-                    ref={textoCuerpoRef}
-                    font={FUENTE}
-                    position={[xTexto, 0.45, zTexto]}
-                    fontSize={0.075}
-                    lineHeight={1.4}
-                    color="#3a2a1a"
-                    anchorX="left"
-                    anchorY="top"
-                    maxWidth={anchoTexto}
-                >
-                    {contenido.texto}
-                </Text>
+                        <ImagenHoja
+                            url={contenido.imagen}
+                            posicion={[ANCHO / 2, -0.12, zTexto + 0.001]}
+                            ancho={1.0}
+                            alto={0.66}
+                        />
 
-                <Text
-                    ref={textoPieRef}
-                    font={FUENTE}
-                    position={[xTexto, -0.75, zTexto]}
-                    fontSize={0.06}
-                    color="#8a6a3a"
-                    anchorX="left"
-                    anchorY="bottom"
-                    maxWidth={anchoTexto}
-                >
-                    {contenido.pie}
-                </Text>
+                        <BotonEntrar
+                            url={contenido.url}
+                            posicion={[ANCHO / 2, -0.72, zTexto + 0.001]}
+                            activo={activa}
+                        />
+                    </>
+                ) : (
+                    <>
+                        <Text
+                            ref={textoEtiquetaRef}
+                            font={FUENTE}
+                            position={[xTexto, 0.82, zTexto]}
+                            fontSize={0.05}
+                            letterSpacing={0.1}
+                            color="#8a6a3a"
+                            anchorX="left"
+                            anchorY="top"
+                            maxWidth={anchoTexto}
+                        >
+                            {contenido.etiqueta}
+                        </Text>
+
+                        <Text
+                            ref={textoTituloRef}
+                            font={FUENTE}
+                            position={[xTexto, 0.7, zTexto]}
+                            fontSize={0.13}
+                            color="#3a1a10"
+                            anchorX="left"
+                            anchorY="top"
+                            maxWidth={anchoTexto}
+                        >
+                            {contenido.titulo}
+                        </Text>
+
+                        <Text
+                            ref={textoCuerpoRef}
+                            font={FUENTE}
+                            position={[xTexto, 0.45, zTexto]}
+                            fontSize={0.075}
+                            lineHeight={1.4}
+                            color="#3a2a1a"
+                            anchorX="left"
+                            anchorY="top"
+                            maxWidth={anchoTexto}
+                        >
+                            {contenido.texto}
+                        </Text>
+
+                        <Text
+                            ref={textoPieRef}
+                            font={FUENTE}
+                            position={[xTexto, -0.75, zTexto]}
+                            fontSize={0.06}
+                            color="#8a6a3a"
+                            anchorX="left"
+                            anchorY="bottom"
+                            maxWidth={anchoTexto}
+                        >
+                            {contenido.pie}
+                        </Text>
+                    </>
+                )}
             </Suspense>
         </group>
     );
@@ -363,16 +460,14 @@ function Hoja({ indice, pasada, activa, retrocedible, onPasar, onRetroceder, con
 
 function Libro({ cerrando, texturas }) {
     const viewport = useThree((estado) => estado.viewport);
+    // Lomo al centro para que el montón izquierdo de hojas pasadas quede a la vista
     const escala = Math.min(
         ESCALA_MAX,
         (viewport.height * OBJETIVO_ALTO) / ALTO,
         (viewport.width * (1 - MARGEN * 2)) / (ANCHO * 2),
         (viewport.height * (1 - MARGEN * 2)) / ALTO
     );
-    const esMovil = viewport.aspect < 1;
-    const xLomo = esMovil
-        ? 0
-        : -viewport.width / 2 + ANCHO * escala + MARGEN * viewport.width / 2;
+    const xLomo = 0;
 
     const mitad = GROSOR_PAGINAS / 2 + GROSOR_TAPA / 2;
     const tapaRef = useRef();
