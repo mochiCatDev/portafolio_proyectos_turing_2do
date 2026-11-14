@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import './Inicio.css';
 import { mensajeInicio } from "../../data/mensajesSencillos";
+import MaquinaDeEscribir from "../../components/MaquinaDeEscribirMultiple/MaquinaDeEscribirMultiple";
 
 function Inicio() {
     const [porcentajeRecursos, setPorcentajeRecursos] = useState(100);
@@ -14,9 +15,7 @@ function Inicio() {
             <div className="contenido">
 
                 <h1>Mi Portafolio Personal</h1>
-                {mensajeInicio.map((mensaje, index) => (
-                    <p key={index}>{mensaje}</p>
-                ))}
+                <MaquinaDeEscribir mensajes={mensajeInicio} velocidad={80} tiempoPausa={1000} bucle/>
 
                 <div
                     className='porcentaje-recursos'
