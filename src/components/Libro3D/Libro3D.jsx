@@ -206,7 +206,7 @@ function Hoja({ indice, pasada, activa, retrocedible, onPasar, onRetroceder, con
     const opacidadRef = useRef(1);
     // La hoja 0 es la más cercana a la tapa delantera
     const z = GROSOR_PAGINAS / 2 - ESPACIO / 2 - indice * ESPACIO;
-    const zTexto = GROSOR_HOJA / 2 + 0.002;
+    const zTexto = GROSOR_HOJA / 2 + 0.006; // separación extra para evitar el duplicado por z-fighting
     const xTexto = 0.2;
     const anchoTexto = ANCHO - 0.4;
     const anchoHoja = ANCHO - 0.1;
