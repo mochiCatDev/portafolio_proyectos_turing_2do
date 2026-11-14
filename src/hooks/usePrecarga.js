@@ -1,29 +1,8 @@
 import { useEffect, useState } from 'react';
-import { preloadFont } from 'troika-three-text';
 
 const TIEMPO_MAXIMO = 15000; // ms antes de dar el recurso por terminado
-const FUENTES = /\.(ttf|otf|woff)$/i;
-
-function cargarFuente(url) {
-    return new Promise((resolve) => {
-        fetch(url)
-            .then((respuesta) => respuesta.arrayBuffer())
-            .then(() => {
-                preloadFont(url, resolve);
-                setTimeout(resolve, TIEMPO_MAXIMO);
-            })
-            .catch(() => {
-                setTimeout(resolve, TIEMPO_MAXIMO);
-                resolve();
-            });
-    });
-}
 
 function cargarRecurso(url) {
-    if (FUENTES.test(url)) {
-        return cargarFuente(url);
-    }
-
     return new Promise((resolve) => {
         const esVideo = /\.(mp4|webm)$/i.test(url);
         const elemento = esVideo ? document.createElement('video') : new Image();
@@ -43,16 +22,15 @@ function cargarRecurso(url) {
 }
 
 export function usePrecarga(urls) {
-    const [estado, setEstado] = useState({ urls: [], contador: 0 });
+    const [cargados, setCargados] = useState(0);
 
     useEffect(() => {
         let activo = true;
-        let contador = 0;
+        setCargados(0);
 
         urls.forEach((url) => {
             cargarRecurso(url).then(() => {
-                contador += 1;
-                if (activo) setEstado({ urls, contador });
+                if (activo) setCargados((previo) => previo + 1);
             });
         });
 
@@ -60,8 +38,6 @@ export function usePrecarga(urls) {
             activo = false;
         };
     }, [urls]);
-
-    const cargados = estado.urls === urls ? estado.contador : 0;
 
     const porcentaje = urls.length === 0
         ? 100

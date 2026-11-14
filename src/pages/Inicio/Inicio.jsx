@@ -5,7 +5,7 @@ import MaquinaDeEscribir from "../../components/MaquinaDeEscribirMultiple/Maquin
 import { usePrecarga } from "../../hooks/usePrecarga";
 import chica from "../../assets/inicio/chica.png";
 
-const RECURSOS = [chica, '/videos/fondo.mp4', '/fonts/Lora-Regular.ttf'];
+const RECURSOS = [chica, '/videos/fondo.mp4'];
 
 function Inicio() {
     const { porcentaje, completo } = usePrecarga(RECURSOS);
