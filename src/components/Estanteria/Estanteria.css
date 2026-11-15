@@ -1,10 +1,13 @@
+:root {
+    --ancho-estanteria: min(30vw, 420px);
+}
+
 .estanteria {
     position: fixed;
     left: -100%;
     top: 0;
     bottom: 0;
-    width: 30vw;
-    max-width: 420px;
+    width: var(--ancho-estanteria);
     z-index: 50;
     display: flex;
     align-items: center;
@@ -365,8 +368,7 @@
 /* Ajuste en pantallas muy pequeñas */
 @media (max-width: 768px) {
     .estanteria {
-        width: 45vw;
-        max-width: none;
+        --ancho-estanteria: 45vw;
     }
     .estante {
         height: 190px;
