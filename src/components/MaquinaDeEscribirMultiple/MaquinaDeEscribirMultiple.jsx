@@ -9,12 +9,14 @@ function MaquinaDeEscribir({
     const [indiceMensaje, setIndiceMensaje] = useState(0);
     const [textoMostrado, setTextoMostrado] = useState('');
     const [indiceLetra, setIndiceLetra] = useState(0);
+    const [mensajesPrevios, setMensajesPrevios] = useState(mensajes);
 
-    useEffect(() => {
+    if (mensajes !== mensajesPrevios) {
+        setMensajesPrevios(mensajes);
         setIndiceMensaje(0);
         setTextoMostrado('');
         setIndiceLetra(0);
-    }, [mensajes]);
+    }
 
     const mensajeActual = mensajes[indiceMensaje] || '';
 

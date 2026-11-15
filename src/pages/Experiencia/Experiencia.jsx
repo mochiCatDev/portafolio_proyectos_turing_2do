@@ -1,32 +1,52 @@
-import { useState } from 'react';
-import Libro3D from '../../components/Libro3D/Libro3D';
+import { useEffect, useRef, useState } from 'react';
+import Estanteria from '../../components/Estanteria/Estanteria';
 import './Experiencia.css';
 
+const SEGUNDO_APERTURA = 9;
+const ESPERA_INICIO = 6000;
+
 function Experiencia() {
-    const [libroAbierto, setLibroAbierto] = useState(false);
+    const [mostrarEstanteria, setMostrarEstanteria] = useState(false);
+    const videoRef = useRef(null);
+    const reprodujoRef = useRef(false);
+
+    useEffect(() => {
+        const temporizador = setTimeout(() => {
+            if (!reprodujoRef.current) {
+                setMostrarEstanteria(true);
+            }
+        }, ESPERA_INICIO);
+
+        return () => clearTimeout(temporizador);
+    }, []);
+
+    const manejarTiempo = () => {
+        if (mostrarEstanteria) return;
+        if (videoRef.current && videoRef.current.currentTime >= SEGUNDO_APERTURA) {
+            setMostrarEstanteria(true);
+        }
+    };
 
     return (
         <main className="escena-oscura">
             <div className="escena">
                 <video
+                    ref={videoRef}
                     className="video-fondo"
                     src="/videos/fondo.mp4"
                     autoPlay
                     muted
-                    loop
                     playsInline
                     disablePictureInPicture
+                    onTimeUpdate={manejarTiempo}
+                    onEnded={() => setMostrarEstanteria(true)}
+                    onError={() => setMostrarEstanteria(true)}
+                    onPlaying={() => { reprodujoRef.current = true; }}
                 />
                 <div className="video-fundido"></div>
-
-                <button
-                    className="hotspot-libro"
-                    aria-label="Abrir libro de proyectos"
-                    onClick={() => setLibroAbierto(true)}
-                />
             </div>
 
-            {libroAbierto && <Libro3D onCerrar={() => setLibroAbierto(false)} />}
+            {mostrarEstanteria && <Estanteria />}
         </main>
     );
 }

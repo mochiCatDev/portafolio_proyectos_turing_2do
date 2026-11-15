@@ -33,14 +33,3 @@
     rgba(5, 5, 5, 1) 100%
   );
 }
-
-.hotspot-libro {
-  position: absolute;
-  left: 36%;
-  top: 54%;
-  width: 14%;
-  height: 40%;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-}
