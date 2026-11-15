@@ -4,7 +4,7 @@
 
 .estanteria {
     position: fixed;
-    left: -100%;
+    left: 0;
     top: 0;
     bottom: 0;
     width: var(--ancho-estanteria);
@@ -17,16 +17,13 @@
     box-shadow:
         inset -6px 0 24px rgba(0, 0, 0, 0.6),
         22px 0 55px rgba(0, 0, 0, 0.7);
-    animation: entrarDeslizante 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation: entrarDeslizante 1s cubic-bezier(0.22, 1, 0.36, 1) backwards;
     overflow: hidden;
 }
 
 @keyframes entrarDeslizante {
     from {
-        left: -100%;
-    }
-    to {
-        left: 0;
+        transform: translateX(calc(-100% - 80px));
     }
 }
 
@@ -388,5 +385,11 @@
     }
     .estante {
         height: 190px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .estanteria {
+        animation: none;
     }
 }
