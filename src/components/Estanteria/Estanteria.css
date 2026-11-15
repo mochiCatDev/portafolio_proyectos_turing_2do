@@ -1,0 +1,425 @@
+:root {
+    --ancho-estanteria: min(30vw, 420px);
+}
+
+.estanteria {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: var(--ancho-estanteria);
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #14100c;
+    /* Sombra profunda que proyecta hacia la derecha sobre el fondo */
+    box-shadow:
+        inset -6px 0 24px rgba(0, 0, 0, 0.6),
+        22px 0 55px rgba(0, 0, 0, 0.7);
+    animation: entrarDeslizante 1s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    overflow: hidden;
+}
+
+@keyframes entrarDeslizante {
+    from {
+        transform: translateX(calc(-100% - 80px));
+    }
+}
+
+/* Marco exterior: madera maciza oscura con veta */
+.estanteria-marco {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background:
+        /* Veta vertical principal */
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 0, 0, 0.12) 4px
+        ),
+        /* Veta horizontal sutil (anillos de crecimiento) */
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 40px,
+            rgba(0, 0, 0, 0.06) 44px
+        ),
+        linear-gradient(180deg, #2b1e16 0%, #4a3728 18%, #3e2b1e 55%, #2b1e16 100%);
+    border-left: 10px solid #1a110c;
+    border-right: 10px solid #221810;
+}
+
+.estanteria-marco::before {
+    /* Brillo orgánico en la parte superior (luz que golpea el mueble) */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background: linear-gradient(to bottom, rgba(255, 244, 220, 0.25), transparent 70%);
+    pointer-events: none;
+    z-index: 3;
+}
+
+.estanteria-marco::after {
+    /* Oscurecimiento inferior para dar profundidad y peso visual */
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 90px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent 90%);
+    pointer-events: none;
+    z-index: 3;
+}
+
+/* Cornisa superior (moldura decorativa realista) */
+.moldura-superior {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    top: 12px;
+    height: 20px;
+    background:
+        linear-gradient(180deg, #3e2b1e, #5d4037, #3e2b1e);
+    border: 2px solid #1a110c;
+    border-radius: 4px 4px 0 0;
+    box-shadow:
+        inset 0 2px 4px rgba(255, 255, 255, 0.15),
+        0 2px 6px rgba(0, 0, 0, 0.5);
+    z-index: 3;
+}
+
+/* Detalle de cuña en la cornisa (dado de madera) */
+.moldura-superior::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 6px;
+    background: #5d4037;
+    border-left: 1px solid #1a110c;
+    border-right: 1px solid #1a110c;
+}
+
+/* Placa de madera con el título de la estantería */
+.estanteria-titulo {
+    position: absolute;
+    top: 42px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4;
+    height: 40px;
+    margin: 0;
+    padding: 0 18px;
+    box-sizing: border-box;
+    white-space: nowrap;
+    max-width: calc(100% - 40px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, #5d4037, #3e2723);
+    border: 2px solid #c9a15a;
+    border-radius: 6px;
+    box-shadow:
+        0 4px 10px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    font-family: Georgia, 'Times New Roman', serif;
+    color: #f1e3c2;
+    font-weight: 700;
+    font-size: clamp(12px, 1.3vw, 18px);
+    letter-spacing: 0.08em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+/* Cornisa inferior */
+.moldura-inferior {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 12px;
+    height: 16px;
+    background:
+        linear-gradient(180deg, #5d4037, #3e2b1e, #5d4037);
+    border: 2px solid #1a110c;
+    border-radius: 0 0 4px 4px;
+    box-shadow:
+        inset 0 -2px 4px rgba(255, 255, 255, 0.1),
+        0 -2px 6px rgba(0, 0, 0, 0.5);
+    z-index: 3;
+}
+
+.estanteria-interior {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    padding: 105px 20px 105px 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 34px;
+    overflow-y: auto;
+}
+
+/* Fondo interior del armario: madera más clara con veta vertical */
+.estanteria-interior::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        repeating-linear-gradient(
+            0deg,
+            #d7b085,
+            #d7b085 1px,
+            #c4a484 2px
+        ),
+        linear-gradient(180deg, #e6d0b8 0%, #c9b196 40%, #b59375 100%);
+    background-blend-mode: multiply;
+    opacity: 0.85;
+    pointer-events: none;
+}
+
+/* Estante: tabla horizontal gruesa con grosor y borde */
+.estante {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+    justify-content: space-evenly;
+    flex-shrink: 0;
+    height: 210px;
+    padding-bottom: 20px;
+    /* Tabla de madera gruesa */
+    background:
+        linear-gradient(180deg, #8d6e63 0%, #a1887f 35%, #795548 100%);
+    border: 3px solid #4e342e;
+    border-radius: 5px 5px 0 0;
+    box-shadow:
+        inset 0 5px 10px rgba(255, 255, 255, 0.2),
+        inset 0 -5px 12px rgba(0, 0, 0, 0.5),
+        0 10px 25px rgba(0, 0, 0, 0.5);
+    overflow: visible;
+}
+
+/* Frente del estante (grosor visible) */
+.estante::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: -3px;
+    right: -3px;
+    height: 6px;
+    background: #5d4037;
+    border: 2px solid #4e342e;
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* Soportes laterales del estante (herraje visible) */
+.estante::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -8px;
+    width: 8px;
+    background: #3e2723;
+    border-right: 1px solid #5d4037;
+    box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.15);
+    z-index: 0;
+}
+
+.estante:nth-child(2) {
+    margin-top: 10px;
+}
+
+/* Libro individual */
+.libro {
+    position: relative;
+    width: var(--grosor, 44px);
+    height: var(--altura, 170px);
+    background: var(--tono, #5d4037);
+    border: 1.5px solid rgba(0, 0, 0, 0.35);
+    border-radius: 3px 3px 0 0;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+    transform-origin: bottom center;
+    transform: rotate(var(--inclinacion, 0deg));
+    box-shadow:
+        0 8px 16px rgba(0, 0, 0, 0.4),
+        inset 1px 0 0 rgba(255, 255, 255, 0.25),
+        inset -1px 0 0 rgba(0, 0, 0, 0.4);
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    appearance: none;
+}
+
+.libro:hover {
+    transform: translateY(-14px) rotate(var(--inclinacion, 0deg)) scale(1.05);
+    z-index: 5;
+    filter: brightness(1.3);
+    box-shadow:
+        0 20px 35px rgba(0, 0, 0, 0.55),
+        inset 1px 0 0 rgba(255, 255, 255, 0.35),
+        inset -1px 0 0 rgba(0, 0, 0, 0.4);
+}
+
+.libro:focus-visible {
+    transform: translateY(-14px) rotate(var(--inclinacion, 0deg)) scale(1.05);
+    z-index: 5;
+    filter: brightness(1.3);
+    box-shadow:
+        0 20px 35px rgba(0, 0, 0, 0.55),
+        inset 1px 0 0 rgba(255, 255, 255, 0.35),
+        inset -1px 0 0 rgba(0, 0, 0, 0.4);
+    outline: 2px solid #e8b575;
+    outline-offset: 3px;
+}
+
+.libro:active {
+    transform: translateY(-7px) rotate(var(--inclinacion, 0deg)) scale(1.02);
+}
+
+/* Cantos superior e inferior del libro (páginas visibles) */
+.libro-canto-superior,
+.libro-canto-inferior {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 14px;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.15), transparent),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.3), transparent 40%, rgba(0, 0, 0, 0.3) 60%, rgba(0, 0, 0, 0.3));
+}
+
+.libro-canto-superior {
+    top: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.45);
+}
+
+.libro-canto-inferior {
+    bottom: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.35);
+}
+
+/* Lomo del libro */
+.libro-lomo {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 4px;
+    box-sizing: border-box;
+    /* Veta sutil del lomo */
+    background:
+        repeating-linear-gradient(90deg, transparent, transparent 7px, rgba(0, 0, 0, 0.15) 9px),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(0, 0, 0, 0.18));
+}
+
+.libro-cinta {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    width: 22%;
+    height: 40%;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transform: translateX(-50%);
+    border-radius: 2px;
+    opacity: 0.85;
+}
+
+.libro-titulo {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    color: #e8dccf;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    line-height: 1.1;
+    text-align: center;
+    white-space: nowrap;
+    padding: 3px 1px;
+    max-height: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow:
+        0 1px 0 rgba(0, 0, 0, 0.55),
+        0 2px 4px rgba(0, 0, 0, 0.45);
+    display: block;
+    width: 100%;
+}
+
+/* Brillo de madera pulida en el lomo */
+.libro-brillo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 30%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.18), transparent 60%);
+    pointer-events: none;
+    border-radius: 3px 0 0 0;
+    mix-blend-mode: overlay;
+}
+
+/* Sombra que proyecta el armario hacia la derecha sobre el fondo */
+.sombra-derecha {
+    position: absolute;
+    top: 0;
+    right: -26px;
+    width: 26px;
+    height: 100%;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.85), transparent);
+    pointer-events: none;
+    z-index: 4;
+}
+
+/* Barra de desplazamiento sutil */
+.estanteria-interior::-webkit-scrollbar {
+    width: 6px;
+}
+.estanteria-interior::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+.estanteria-interior::-webkit-scrollbar-thumb {
+    background: rgba(120, 80, 50, 0.6);
+    border-radius: 3px;
+}
+
+/* Ajuste en pantallas muy pequeñas */
+@media (max-width: 768px) {
+    .estanteria {
+        --ancho-estanteria: 45vw;
+    }
+    .estante {
+        height: 190px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .estanteria {
+        animation: none;
+    }
+}

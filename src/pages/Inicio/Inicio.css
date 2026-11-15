@@ -1,0 +1,35 @@
+.inicio {
+    display: flex;
+    flex-direction: column;
+    background-color: black;
+    color: white;
+    height: 100dvh;
+    width: 100%;
+    padding: 10px;
+}
+
+.inicio .contenido {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+}
+
+.inicio .contenido .porcentaje-recursos {
+    color: red;
+}
+
+.inicio .contenido .porcentaje-recursos .cargados {
+    color: green;
+}
+
+.inicio .contenido button {
+    width: 30%;
+}
+
+.inicio .imagen {
+    width: 10%;
+    position: absolute;
+    bottom: 0;
+}

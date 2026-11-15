@@ -1,0 +1,56 @@
+.no-encontrado {
+    display: flex;
+    flex-direction: column;
+    background-color: black;
+    color: white;
+    height: 100dvh;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.no-encontrado .no-encontrado-contenido {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    text-align: center;
+}
+
+.no-encontrado .no-encontrado-codigo {
+    margin: 0;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(48px, 15vw, 120px);
+    font-weight: 700;
+    color: #c9a15a;
+    letter-spacing: 0.05em;
+}
+
+.no-encontrado .no-encontrado-mensaje {
+    margin: 20px 0 30px 0;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(18px, 4vw, 24px);
+    font-weight: 400;
+    color: white;
+}
+
+.no-encontrado .no-encontrado-boton {
+    display: inline-block;
+    padding: 12px 24px;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+    border: 2px solid #c9a15a;
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.no-encontrado .no-encontrado-boton:hover {
+    background: #c9a15a;
+    color: black;
+}
