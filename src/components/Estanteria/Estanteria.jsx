@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import { proyectos } from '../../data/proyectos';
 import Modal from '../../components/Modal/Modal';
 import './Estanteria.css';
@@ -64,13 +64,13 @@ function Estante({ libros, indice, onSeleccion }) {
         <div className="estante" style={{ '--indice': indice }}>
             <EspacioVacio ancho={espacioBase} />
             {libros.map((proyecto, i) => (
-                <>
+                <Fragment key={proyecto.id}>
                     <Libro
                         proyecto={proyecto}
                         onClick={() => onSeleccion(proyecto)}
                     />
                     {i < libros.length - 1 && <EspacioVacio ancho={espacioBase} />}
-                </>
+                </Fragment>
             ))}
             <EspacioVacio ancho={espacioBase} />
         </div>

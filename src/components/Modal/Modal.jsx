@@ -2,7 +2,7 @@ import { useState } from 'react';
 import './Modal.css';
 
 function Modal({ libro, onCerrar }) {
-    const [imagenCargada, setImagenCargada] = useState(true);
+    const [imagenCargada, setImagenCargada] = useState(Boolean(libro.imagen && libro.imagen.trim() !== ''));
 
     return (
         <div className="modal-fondo" onClick={onCerrar}>
@@ -16,7 +16,11 @@ function Modal({ libro, onCerrar }) {
                     <p className="modal-resumen">{libro.descripcion}</p>
 
                     <div className="modal-imagen">
-                        {imagenCargada ? (
+                        {!libro.imagen || libro.imagen.trim() === '' ? (
+                            <span className="modal-imagen-texto">
+                                Imagen no disponible
+                            </span>
+                        ) : imagenCargada ? (
                             <img
                                 src={libro.imagen}
                                 alt={`Imagen de ${libro.titulo}`}
@@ -30,14 +34,16 @@ function Modal({ libro, onCerrar }) {
                         )}
                     </div>
 
-                    <a
-                        href={libro.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="modal-boton"
-                    >
-                        Entrar
-                    </a>
+                    {libro.url && libro.url.trim() !== '' && (
+                        <a
+                            href={libro.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="modal-boton"
+                        >
+                            Entrar
+                        </a>
+                    )}
                 </div>
             </aside>
         </div>
