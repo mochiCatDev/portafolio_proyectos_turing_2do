@@ -35,8 +35,10 @@ function Libro({ proyecto, onClick }) {
     const inclinacion = calcularInclinacion(proyecto.id);
 
     return (
-        <div
+        <button
+            type="button"
             className="libro"
+            aria-label={`Abrir proyecto ${proyecto.titulo}`}
             style={{
                 width: `${grosor}px`,
                 height: `${altura}px`,
@@ -45,14 +47,14 @@ function Libro({ proyecto, onClick }) {
             }}
             onClick={() => onClick(proyecto)}
         >
-            <div className="libro-canto-superior" />
-            <div className="libro-lomo">
-                <div className="libro-cinta" />
-                <div className="libro-titulo">{proyecto.titulo}</div>
-            </div>
-            <div className="libro-canto-inferior" />
-            <div className="libro-brillo" />
-        </div>
+            <span className="libro-canto-superior" />
+            <span className="libro-lomo">
+                <span className="libro-cinta" />
+                <span className="libro-titulo">{proyecto.titulo}</span>
+            </span>
+            <span className="libro-canto-inferior" />
+            <span className="libro-brillo" />
+        </button>
     );
 }
 
