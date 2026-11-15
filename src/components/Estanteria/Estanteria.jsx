@@ -98,9 +98,10 @@ function Estanteria() {
     const manejarSeleccion = (proyecto) => setLibroSeleccionado(proyecto);
 
     return (
-        <aside className="estanteria">
+        <aside className="estanteria" aria-labelledby="titulo-estanteria">
             <div className="estanteria-marco">
                 <div className="moldura-superior" />
+                <h2 id="titulo-estanteria" className="estanteria-titulo">Mis Proyectos Web</h2>
                 <div className="estanteria-interior">
                     {estantes.map((libros, i) => (
                         <Estante key={i} libros={libros} onSeleccion={manejarSeleccion} />
