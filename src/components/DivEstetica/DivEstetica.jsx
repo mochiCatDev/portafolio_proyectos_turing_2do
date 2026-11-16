@@ -143,6 +143,7 @@ export default function DivEstetica({ indiceEscena }) {
                 <Modal
                     libro={libroSeleccionado}
                     chibiUrl={chibis[proyectos.findIndex((p) => p.id === libroSeleccionado.id) % chibis.length].url}
+                    tema={tema}
                     onCerrar={() => setLibroSeleccionado(null)}
                 />
             )}
