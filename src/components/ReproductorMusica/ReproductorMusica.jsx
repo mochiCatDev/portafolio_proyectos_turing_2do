@@ -12,11 +12,10 @@ export default function ReproductorMusica({ indiceActual, onCambiarEscena, mostr
     const avanzarRef = useRef(null);
 
     const escenaActual = escenas[indiceActual];
-    const esIntro = !!escenaActual?.esIntro;
 
     const siguienteIndice = () => (indiceActual + 1) % escenas.length;
     const anteriorIndice = () => (indiceActual - 1 + escenas.length) % escenas.length;
-    const cambioBloqueado = bloqueado || esIntro;
+    const cambioBloqueado = bloqueado || !mostrar;
 
     const cambiarEscena = (nuevoIndice, continuarReproduciendo = reproduciendo) => {
         onCambiarEscena(nuevoIndice);
@@ -30,7 +29,7 @@ export default function ReproductorMusica({ indiceActual, onCambiarEscena, mostr
 
     const toggleReproduccion = async () => {
         const audio = audioRef.current;
-        if (!audio) return;
+        if (!audio || !mostrar) return;
         try {
             if (reproduciendo) {
                 audio.pause();
@@ -103,9 +102,10 @@ export default function ReproductorMusica({ indiceActual, onCambiarEscena, mostr
                 <i className="fa-solid fa-step-backward"></i>
             </button>
             <button
-                className={`control-btn btn-play-pause ${reproduciendo ? 'activo' : ''}`}
+                className={`control-btn btn-play-pause ${reproduciendo ? 'activo' : ''} ${cambioBloqueado ? 'bloqueado' : ''}`}
                 aria-label={reproduciendo ? 'Pausar' : 'Reproducir'}
                 onClick={toggleReproduccion}
+                disabled={!mostrar}
             >
                 <i className={reproduciendo ? 'fa-solid fa-pause' : 'fa-solid fa-play'}></i>
             </button>
