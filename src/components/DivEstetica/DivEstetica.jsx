@@ -126,7 +126,6 @@ export default function DivEstetica({ indiceEscena }) {
             <div className="div-panel">
                 <div className="div-header">
                     <h2 className="div-titulo">Mis Proyectos Web</h2>
-                    <div className="div-line"></div>
                 </div>
 
                 <div className="div-scroll">

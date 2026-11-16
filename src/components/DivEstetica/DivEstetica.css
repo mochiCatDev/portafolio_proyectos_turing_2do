@@ -1,12 +1,27 @@
 .div-estetica {
-    position: relative;
-    width: min(90vw, 700px);
-    max-height: min(85vh, 700px);
-    margin: 0 auto;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: min(30vw, 440px);
+    min-width: 340px;
+    margin: 0;
+    padding: 24px 14px;
+    box-sizing: border-box;
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     color: var(--color-texto, #f0f6fc);
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    z-index: 50;
+    animation: divEntrada 0.9s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+@keyframes divEntrada {
+    from {
+        transform: translateX(calc(-100% - 80px));
+        opacity: 0;
+    }
 }
 
 /* Panel principal futurista neon */
@@ -25,7 +40,6 @@
     flex-direction: column;
     overflow: hidden;
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
     z-index: 1;
 }
 
@@ -45,11 +59,8 @@
 
 /* Header del panel */
 .div-header {
-    padding: 24px 28px 16px 28px;
+    padding: 24px 28px;
     border-bottom: 1px solid var(--color-borde-secundario);
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
 }
 
 .div-titulo {
@@ -61,14 +72,6 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
-}
-
-.div-line {
-    width: 48px;
-    height: 3px;
-    background: var(--color-acento);
-    border-radius: 2px;
-    box-shadow: 0 0 12px var(--color-acento-secundario);
 }
 
 /* Área de scroll elegante */
@@ -264,7 +267,7 @@
     mix-blend-mode: overlay;
 }
 
-/* Efecto de resplandor en las esquinas del panel */
+
 .div-panel::before {
     content: '';
     position: absolute;
@@ -295,8 +298,9 @@
 
 @media (max-width: 640px) {
     .div-estetica {
-        width: 94vw;
-        max-height: 90vh;
+        min-width: 0;
+        width: 42vw;
+        padding: 12px 8px;
     }
     .div-panel {
         border-radius: 12px;

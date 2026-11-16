@@ -7,9 +7,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: 24px 24px 24px min(30vw, 440px);
     box-sizing: border-box;
     animation: modalFondoEntrada 0.4s ease;
+}
+
+@media (max-width: 640px) {
+    .modal-fondo {
+        padding: 24px;
+    }
 }
 
 @keyframes modalFondoEntrada {
