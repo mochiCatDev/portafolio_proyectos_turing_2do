@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import Estanteria from '../../components/Estanteria/Estanteria';
+import DivEstetica from '../../components/DivEstetica/DivEstetica';
 import ReproductorMusica from '../../components/ReproductorMusica/ReproductorMusica';
+import { escenas } from '../../data/escenas';
 import './Experiencia.css';
 
 const SEGUNDO_APERTURA = 9;
@@ -8,8 +9,17 @@ const ESPERA_INICIO = 6000;
 
 function Experiencia() {
     const [mostrarEstanteria, setMostrarEstanteria] = useState(false);
+    const [indiceEscena, setIndiceEscena] = useState(0);
+    const [reproduciendo, setReproduciendo] = useState(false);
+    const reproRef = useRef(false);
     const videoRef = useRef(null);
+    const fondoImgRef = useRef(null);
     const reprodujoRef = useRef(false);
+    const escenaActual = escenas[indiceEscena];
+
+    useEffect(() => {
+        reproRef.current = reproduciendo;
+    }, [reproduciendo]);
 
     useEffect(() => {
         const temporizador = setTimeout(() => {
@@ -21,6 +31,23 @@ function Experiencia() {
         return () => clearTimeout(temporizador);
     }, []);
 
+    // Forzar recarga del video cuando cambie el fondo o el tipo de fondo
+    useEffect(() => {
+        const video = videoRef.current;
+        const img = fondoImgRef.current;
+
+        if (escenaActual.tipoFondo === 'video' && video) {
+            video.src = escenaActual.fondo;
+            video.load();
+            if (reproRef.current) {
+                video.play().catch(() => {});
+            }
+        }
+        if (escenaActual.tipoFondo === 'imagen' && img) {
+            img.src = escenaActual.fondo;
+        }
+    }, [escenaActual]);
+
     const manejarTiempo = () => {
         if (mostrarEstanteria) return;
         if (videoRef.current && videoRef.current.currentTime >= SEGUNDO_APERTURA) {
@@ -28,28 +55,54 @@ function Experiencia() {
         }
     };
 
+    const cambiarEscena = (nuevoIndice) => {
+        setIndiceEscena(nuevoIndice);
+    };
+
     return (
         <main className="escena-oscura">
-            <div className="escena">
+            {/* Fondo de pantalla: video o imagen segķn la escena actual */}
+            {escenaActual.tipoFondo === 'video' ? (
                 <video
+                    key={escenaActual.fondo}
                     ref={videoRef}
                     className="video-fondo"
-                    src="/videos/fondo.mp4"
+                    src={escenaActual.fondo}
                     autoPlay
-                    muted
+                    muted={!!escenaActual.audio}
                     playsInline
-                    preload="metadata"
+                    preload="none"
+                    loop={!escenaActual.esIntro}
                     disablePictureInPicture
                     onTimeUpdate={manejarTiempo}
-                    onEnded={() => setMostrarEstanteria(true)}
+                    onEnded={() => {
+                        setMostrarEstanteria(true);
+                        if (escenaActual.esIntro) {
+                            cambiarEscena((i) => (i + 1) % escenas.length);
+                            setReproduciendo(true);
+                        }
+                    }}
                     onError={() => setMostrarEstanteria(true)}
-                    onPlaying={() => { reprodujoRef.current = true; }}
+                    onPlaying={() => { reprodujoRef.current = true; setReproduciendo(true); }}
                 />
-                <div className="video-fundido"></div>
-            </div>
+            ) : (
+                <img
+                    key={escenaActual.fondo}
+                    ref={fondoImgRef}
+                    className="video-fondo"
+                    src={escenaActual.fondo}
+                    alt="Fondo de escena"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+            )}
+            <div className="video-fundido"></div>
 
-            {mostrarEstanteria && <Estanteria />}
-            <ReproductorMusica />
+            {mostrarEstanteria && <DivEstetica indiceEscena={indiceEscena} />}
+            <ReproductorMusica
+                indiceActual={indiceEscena}
+                onCambiarEscena={cambiarEscena}
+                mostrar={mostrarEstanteria}
+            />
         </main>
     );
 }

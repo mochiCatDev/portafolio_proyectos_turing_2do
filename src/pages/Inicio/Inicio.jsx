@@ -3,9 +3,13 @@ import './Inicio.css';
 import { mensajeInicio } from "../../data/mensajesSencillos";
 import MaquinaDeEscribir from "../../components/MaquinaDeEscribirMultiple/MaquinaDeEscribirMultiple";
 import { usePrecarga } from "../../hooks/usePrecarga";
+import { escenas } from "../../data/escenas";
 import chica from "../../assets/inicio/chica.png";
 
-const RECURSOS = [chica, '/videos/fondo.mp4'];
+const RECURSOS = [
+    chica,
+    escenas[0].fondo,
+];
 
 function Inicio() {
     const { porcentaje, completo } = usePrecarga(RECURSOS);

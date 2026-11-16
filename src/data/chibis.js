@@ -4,6 +4,9 @@ export const chibis = [
     { id: 3, url: '/imagenes/chibi/3.png' },
     { id: 4, url: '/imagenes/chibi/4.png' },
     { id: 5, url: '/imagenes/chibi/5.png' },
+    { id: 5, url: '/imagenes/chibi/6.png' },
+    { id: 5, url: '/imagenes/chibi/7.png' },
+    { id: 5, url: '/imagenes/chibi/8.png' },
 ];
 
 export function obtenerChibiParaProyecto(idProyecto, listaProyectos) {

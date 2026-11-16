@@ -12,9 +12,19 @@
     border-radius: 30px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
     z-index: 100;
-    color: #fff;
     font-family: system-ui, -apple-system, sans-serif;
-    font-size: 0.85rem;
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: opacity 0.7s ease, transform 0.7s ease, visibility 0.7s ease;
+}
+
+.reproductor-musica.visible {
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
+    transform: translateY(0);
 }
 
 .control-btn {
@@ -28,14 +38,14 @@
     background: rgba(255, 255, 255, 0.1);
     color: #fff;
     cursor: pointer;
-    transition: transform 0.15s ease, background 0.2s ease;
+    transition: transform 0.15s ease, background 0.2s ease, opacity 0.2s ease;
 }
 
 .control-btn:active {
     transform: scale(0.92);
 }
 
-.control-btn:hover {
+.control-btn:hover:not(.bloqueado) {
     background: rgba(255, 255, 255, 0.25);
 }
 
@@ -44,34 +54,18 @@
     pointer-events: none;
 }
 
-.btn-play-pause.activo i {
+.control-btn.activo i {
     color: #10b981;
 }
 
-.btn-play-pause.bloqueado i {
-    color: #ef4444;
-    animation: parpadeo 1.2s infinite;
+/* Estado bloqueado (cooldown de 5s): deshabilitado suavemente, no eliminado */
+.control-btn.bloqueado {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+    background: rgba(255, 255, 255, 0.05);
 }
 
-@keyframes parpadeo {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-}
-
-.pista-actual {
-    font-size: 0.78rem;
-    opacity: 0.8;
-    letter-spacing: 0.3px;
-    margin-left: 6px;
-}
-
-.mensaje-error {
-    font-size: 0.72rem;
-    color: #ef4444;
-    background: rgba(239, 68, 68, 0.15);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    padding: 4px 10px;
-    border-radius: 20px;
-    margin-right: 10px;
-    animation: parpadeo 1.5s infinite alternate;
+.control-btn.bloqueado i {
+    color: rgba(255, 255, 255, 0.5);
 }

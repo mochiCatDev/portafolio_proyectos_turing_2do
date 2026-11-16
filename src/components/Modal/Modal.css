@@ -1,15 +1,21 @@
 .modal-fondo {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.35);
-    backdrop-filter: blur(4px);
+    background: transparent;
+    backdrop-filter: none;
     z-index: 60;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: 24px 24px 24px min(30vw, 440px);
     box-sizing: border-box;
     animation: modalFondoEntrada 0.4s ease;
+}
+
+@media (max-width: 640px) {
+    .modal-fondo {
+        padding: 24px;
+    }
 }
 
 @keyframes modalFondoEntrada {
@@ -21,28 +27,27 @@
     }
 }
 
-/* Panel tipo "pegarmina": tarjeta decorada, tridimensional, como una postal pegada */
+/* Panel futurista neon, coordinado con la escena activa */
 .modal-panel {
     position: relative;
-    width: min(430px, 92vw);
+    width: min(440px, 92vw);
     height: min(620px, 90dvh);
     max-height: 90vh;
-    background:
-        radial-gradient(circle at 10% 15%, rgba(255, 255, 255, 0.35), transparent 35%),
-        linear-gradient(180deg, #fdf6e3 0%, #e8d8a8 55%, #d9c38a 100%);
-    border: 2px solid #8a6d3b;
+    background: var(--color-gradiente, linear-gradient(180deg, #161b22 0%, #0d1117 100%));
+    border: 1px solid var(--color-borde, rgba(88, 166, 255, 0.4));
     border-radius: 18px;
     box-shadow:
-        0 20px 40px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(255, 255, 255, 0.55) inset,
-        0 0 0 2px #c9a15a inset,
-        8px 8px 0 rgba(0, 0, 0, 0.25);
+        var(--color-sombra, 0 24px 48px rgba(0, 0, 0, 0.7)),
+        var(--color-sombra-interna, inset 0 1px 0 rgba(88, 166, 255, 0.15));
     display: flex;
     flex-direction: column;
     animation: modalPanelEntrada 0.45s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
     overflow: hidden;
     z-index: 71;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     content-visibility: auto;
+    color: var(--color-texto, #f0f6fc);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
 @keyframes modalPanelEntrada {
@@ -56,154 +61,109 @@
     }
 }
 
-/* Sombra decorada debajo de la pegarmina para dar efecto "pegada al muro" */
+/* Resplandor de acento en la esquina superior */
 .modal-panel::after {
     content: '';
     position: absolute;
-    left: 14px;
-    right: 14px;
-    bottom: -14px;
-    height: 14px;
-    background: rgba(0, 0, 0, 0.2);
-    filter: blur(6px);
-    border-radius: 50%;
+    inset: 0;
+    background: radial-gradient(ellipse at 80% 15%, var(--color-libro-brillo, rgba(88, 166, 255, 0.3)) 0%, transparent 45%);
+    pointer-events: none;
     z-index: 0;
-}
-
-/* Cinta decorativa superior estilo "pegada" */
-.pegarmina-cinta {
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 70px;
-    height: 20px;
-    background: #d97706;
-    border: 2px solid #7c2d12;
-    border-radius: 4px 4px 0 0;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-    z-index: 5;
-}
-
-.pegarmina-cinta::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(0,0,0,0.12) 4px, rgba(0,0,0,0.12) 8px);
-    border-radius: 4px 4px 0 0;
-    pointer-events: none;
-}
-
-/* Esquina doblada superior derecha estilo hoja de papel pegada */
-.modal-panel::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 24px;
-    height: 24px;
-    background: linear-gradient(135deg, transparent 50%, #c9a15a 50%);
-    border-top-right-radius: 16px;
-    z-index: 4;
-    pointer-events: none;
-}
-
-/* Chibi: tamaño fijo, esquina inferior (izquierda o derecha random) */
-.modal-chibi {
-    position: absolute;
-    width: 110px;
-    height: 110px;
-    object-fit: contain;
-    pointer-events: none;
-    z-index: 3;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-}
-
-.modal-chibi.izquierda {
-    bottom: 10px;
-    left: 10px;
-}
-
-.modal-chibi.derecha {
-    bottom: 10px;
-    right: 10px;
 }
 
 .modal-cerrar {
     position: absolute;
-    top: 30px;
-    right: 30px;
-    background: #7a3d24;
-    border: 2px solid #c9a15a;
-    color: #fdf6e3;
+    top: 18px;
+    right: 18px;
     width: 40px;
     height: 40px;
     border-radius: 50%;
+    background: var(--color-superficie-secundaria, #21262d);
+    border: 1px solid var(--color-borde, rgba(88, 166, 255, 0.4));
+    color: var(--color-texto, #f0f6fc);
     cursor: pointer;
-    font-size: 24px;
+    font-size: 22px;
     line-height: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
     z-index: 6;
+    transition: all 0.2s ease;
 }
 
 .modal-cerrar:hover {
-    background: #9a4d34;
-    border-color: #e8b575;
+    background: var(--color-superficie, #161b22);
+    border-color: var(--color-acento, #58a6ff);
+    color: var(--color-acento, #58a6ff);
     transform: rotate(12deg) scale(1.05);
 }
 
 .modal-contenido {
-    padding: 30px 24px;
+    position: relative;
+    flex: 1;
+    padding: 34px 28px 28px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    justify-content: safe center;
     gap: 16px;
     overflow-y: auto;
-    flex: 1;
     text-align: center;
-    position: relative;
     z-index: 2;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-acento-secundario, #1f6feb) var(--color-superficie-secundaria, #21262d);
+}
+
+.modal-contenido::-webkit-scrollbar {
+    width: 8px;
+}
+.modal-contenido::-webkit-scrollbar-track {
+    background: var(--color-superficie-secundaria, #21262d);
+    border-radius: 4px;
+}
+.modal-contenido::-webkit-scrollbar-thumb {
+    background: var(--color-acento-secundario, #1f6feb);
+    border-radius: 4px;
+}
+.modal-contenido::-webkit-scrollbar-thumb:hover {
+    background: var(--color-acento, #58a6ff);
 }
 
 .modal-titulo {
     margin: 0;
     font-size: 26px;
-    font-family: Georgia, 'Times New Roman', serif;
-    color: #5a2e10;
-    line-height: 1.15;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+    font-weight: 700;
+    background: linear-gradient(to right, var(--color-texto, #f0f6fc), var(--color-acento, #58a6ff));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.2;
+    max-width: 90%;
 }
 
 .modal-resumen {
     margin: 0;
-    font-size: 14.5px;
-    color: #4a3422;
+    font-size: 14px;
+    color: var(--color-texto-secundario, #8b949e);
     line-height: 1.7;
-    font-family: Georgia, 'Times New Roman', serif;
-    max-width: 300px;
+    max-width: 340px;
 }
 
 .modal-imagen {
     width: 100%;
     height: 180px;
-    background: #e4d0b0;
-    border: 2px solid #c9a15a;
+    background: var(--color-superficie-secundaria, #21262d);
+    border: 1px solid var(--color-borde-secundario, rgba(31, 111, 235, 0.2));
     border-radius: 12px;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
-    box-shadow:
-        inset 0 2px 6px rgba(0, 0, 0, 0.1),
-        0 4px 10px rgba(0, 0, 0, 0.2);
     flex-shrink: 0;
+    box-shadow:
+        0 6px 14px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .modal-imagen img {
@@ -214,41 +174,53 @@
 }
 
 .modal-imagen-texto {
-    color: #8a6a3a;
-    font-family: Georgia, 'Times New Roman', serif;
+    color: var(--color-texto-secundario, #8b949e);
     font-size: 13px;
     opacity: 0.65;
-    text-align: center;
     padding: 0 16px;
+    text-align: center;
 }
 
 .modal-boton {
     display: inline-block;
-    padding: 12px 24px;
-    background: #7a3d24;
-    color: #fdf6e3;
-    border: 2px solid #c9a15a;
+    padding: 12px 28px;
+    background: var(--color-acento-secundario, #1f6feb);
+    color: #fff;
+    border: 1px solid var(--color-acento, #58a6ff);
     border-radius: 10px;
     font-size: 14px;
-    font-weight: 700;
-    font-family: Georgia, 'Times New Roman', serif;
-    text-align: center;
+    font-weight: 600;
+    letter-spacing: 0.4px;
     text-decoration: none;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    transition: transform 0.15s ease, background 0.15s ease;
-    margin-top: 6px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+    transition: all 0.2s ease;
+    margin-top: 4px;
     flex-shrink: 0;
 }
 
 .modal-boton:hover {
-    background: #9a4d34;
-    border-color: #e8b575;
-    transform: translateY(-1px);
+    background: var(--color-acento, #58a6ff);
+    border-color: var(--color-acento, #58a6ff);
+    transform: translateY(-2px);
 }
 
 .modal-boton:active {
     transform: translateY(0);
+}
+
+/* Chibi: esquina inferior derecha, sobresaliendo del modal */
+.modal-chibi {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    pointer-events: none;
+    z-index: 3;
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.45));
+    bottom: -15px;
+    right: -15px;
+    transition: all 0.5s ease;
 }
 
 @media (max-width: 640px) {
@@ -258,7 +230,7 @@
         border-radius: 14px;
     }
     .modal-contenido {
-        padding: 22px 16px;
+        padding: 26px 20px;
     }
     .modal-titulo {
         font-size: 22px;
@@ -267,8 +239,10 @@
         height: 150px;
     }
     .modal-chibi {
-        width: 90px;
-        height: 90px;
+        width: 80px;
+        height: 80px;
+        bottom: -12px;
+        right: -12px;
     }
 }
 

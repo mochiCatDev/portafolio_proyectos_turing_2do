@@ -2,12 +2,26 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import './Modal.css';
 
-function Modal({ libro, chibiUrl, onCerrar }) {
+function Modal({ libro, chibiUrl, tema, onCerrar }) {
     const [imagenCargada, setImagenCargada] = useState(Boolean(libro.imagen && libro.imagen.trim() !== ''));
-    const esquinaChibi = libro.id % 2 === 0 ? 'derecha' : 'izquierda';
     const tituloId = useId();
     const cerrarRef = useRef(null);
     const previoRef = useRef(null);
+
+    const variablesTema = tema ? {
+        '--color-superficie': tema.superficie,
+        '--color-superficie-secundaria': tema.superficieSecundaria,
+        '--color-texto': tema.texto,
+        '--color-texto-secundario': tema.textoSecundario,
+        '--color-acento': tema.acento,
+        '--color-acento-secundario': tema.acentoSecundario,
+        '--color-borde': tema.borde,
+        '--color-borde-secundario': tema.bordeSecundario,
+        '--color-sombra': tema.sombra,
+        '--color-sombra-interna': tema.sombraInterna,
+        '--color-gradiente': tema.gradiente,
+        '--color-libro-brillo': tema.libroBrillo,
+    } : undefined;
 
     useEffect(() => {
         previoRef.current = document.activeElement;
@@ -39,6 +53,7 @@ function Modal({ libro, chibiUrl, onCerrar }) {
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby={tituloId}
+                style={variablesTema}
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="pegarmina-cinta" />
@@ -52,9 +67,10 @@ function Modal({ libro, chibiUrl, onCerrar }) {
                     ×
                 </button>
 
+                {/* Chibi en esquina inferior derecha, fuera de la caja del modal */}
                 {chibiUrl && (
                     <img
-                        className={`modal-chibi ${esquinaChibi}`}
+                        className="modal-chibi"
                         src={chibiUrl}
                         alt=""
                         loading="lazy"
