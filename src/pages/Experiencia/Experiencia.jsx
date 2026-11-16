@@ -38,6 +38,7 @@ function Experiencia() {
                     autoPlay
                     muted
                     playsInline
+                    preload="metadata"
                     disablePictureInPicture
                     onTimeUpdate={manejarTiempo}
                     onEnded={() => setMostrarEstanteria(true)}
