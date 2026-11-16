@@ -11,10 +11,15 @@ function Experiencia() {
     const [mostrarEstanteria, setMostrarEstanteria] = useState(false);
     const [indiceEscena, setIndiceEscena] = useState(0);
     const [reproduciendo, setReproduciendo] = useState(false);
+    const reproRef = useRef(false);
     const videoRef = useRef(null);
     const fondoImgRef = useRef(null);
     const reprodujoRef = useRef(false);
     const escenaActual = escenas[indiceEscena];
+
+    useEffect(() => {
+        reproRef.current = reproduciendo;
+    }, [reproduciendo]);
 
     useEffect(() => {
         const temporizador = setTimeout(() => {
@@ -34,7 +39,7 @@ function Experiencia() {
         if (escenaActual.tipoFondo === 'video' && video) {
             video.src = escenaActual.fondo;
             video.load();
-            if (reproduciendo) {
+            if (reproRef.current) {
                 video.play().catch(() => {});
             }
         }
