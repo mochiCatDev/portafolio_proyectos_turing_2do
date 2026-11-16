@@ -4,7 +4,7 @@ import './ReproductorMusica.css';
 
 const COOLDOWN_MS = 5000;
 
-export default function ReproductorMusica({ indiceActual, onCambiarEscena }) {
+export default function ReproductorMusica({ indiceActual, onCambiarEscena, mostrar = true }) {
     const [reproduciendo, setReproduciendo] = useState(false);
     const [bloqueado, setBloqueado] = useState(false);
     const audioRef = useRef(null);
@@ -12,9 +12,11 @@ export default function ReproductorMusica({ indiceActual, onCambiarEscena }) {
     const avanzarRef = useRef(null);
 
     const escenaActual = escenas[indiceActual];
+    const esIntro = !!escenaActual?.esIntro;
 
     const siguienteIndice = () => (indiceActual + 1) % escenas.length;
     const anteriorIndice = () => (indiceActual - 1 + escenas.length) % escenas.length;
+    const cambioBloqueado = bloqueado || esIntro;
 
     const cambiarEscena = (nuevoIndice, continuarReproduciendo = reproduciendo) => {
         onCambiarEscena(nuevoIndice);
@@ -28,7 +30,7 @@ export default function ReproductorMusica({ indiceActual, onCambiarEscena }) {
 
     const toggleReproduccion = async () => {
         const audio = audioRef.current;
-        if (!audio || bloqueado) return;
+        if (!audio) return;
         try {
             if (reproduciendo) {
                 audio.pause();
@@ -83,41 +85,42 @@ export default function ReproductorMusica({ indiceActual, onCambiarEscena }) {
     }, [escenaActual]);
 
     return (
-        <nav className="reproductor-musica" aria-label="Control de musica de fondo">
+        <nav className={`reproductor-musica ${mostrar ? 'visible' : ''}`} aria-label="Control de musica de fondo">
             <audio ref={audioRef} preload="auto" />
             <button
-                className={`control-btn btn-atras ${bloqueado ? 'bloqueado' : ''}`}
+                className={`control-btn btn-atras ${cambioBloqueado ? 'bloqueado' : ''}`}
                 aria-label="Pista anterior"
                 onClick={() => {
+                    if (cambioBloqueado) return;
                     cambiarEscena(anteriorIndice(), true);
                     const audio = audioRef.current;
                     if (audio && reproduciendo) {
                         audio.play().catch(() => {});
                     }
                 }}
-                disabled={bloqueado}
+                disabled={cambioBloqueado}
             >
                 <i className="fa-solid fa-step-backward"></i>
             </button>
             <button
-                className={`control-btn btn-play-pause ${reproduciendo ? 'activo' : ''} ${bloqueado ? 'bloqueado' : ''}`}
+                className={`control-btn btn-play-pause ${reproduciendo ? 'activo' : ''}`}
                 aria-label={reproduciendo ? 'Pausar' : 'Reproducir'}
                 onClick={toggleReproduccion}
-                disabled={bloqueado}
             >
                 <i className={reproduciendo ? 'fa-solid fa-pause' : 'fa-solid fa-play'}></i>
             </button>
             <button
-                className={`control-btn btn-adelante ${bloqueado ? 'bloqueado' : ''}`}
+                className={`control-btn btn-adelante ${cambioBloqueado ? 'bloqueado' : ''}`}
                 aria-label="Pista siguiente"
                 onClick={() => {
+                    if (cambioBloqueado) return;
                     cambiarEscena(siguienteIndice(), true);
                     const audio = audioRef.current;
                     if (audio && reproduciendo) {
                         audio.play().catch(() => {});
                     }
                 }}
-                disabled={bloqueado}
+                disabled={cambioBloqueado}
             >
                 <i className="fa-solid fa-step-forward"></i>
             </button>

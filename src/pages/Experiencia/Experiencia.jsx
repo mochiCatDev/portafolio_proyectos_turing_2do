@@ -101,6 +101,7 @@ function Experiencia() {
             <ReproductorMusica
                 indiceActual={indiceEscena}
                 onCambiarEscena={cambiarEscena}
+                mostrar={mostrarEstanteria}
             />
         </main>
     );
