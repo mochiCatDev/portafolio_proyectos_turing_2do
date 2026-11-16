@@ -1,21 +1,15 @@
 .modal-fondo {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.18);
-    backdrop-filter: blur(2px);
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(6px);
     z-index: 60;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-left: var(--ancho-estanteria);
+    padding: 24px;
     box-sizing: border-box;
-    animation: modalFondoEntrada 0.6s ease;
-}
-
-@media (max-width: 768px) {
-    .modal-fondo {
-        padding-left: 0;
-    }
+    animation: modalFondoEntrada 0.5s ease;
 }
 
 @keyframes modalFondoEntrada {
@@ -27,101 +21,166 @@
     }
 }
 
-/* Panel flotante centrado en el espacio libre a la derecha de la estantería */
+/* Panel tipo "pegarmina": tarjeta decorada, tridimensional, como una postal pegada */
 .modal-panel {
     position: relative;
-    width: min(400px, calc(100% - 32px));
-    height: min(560px, 90dvh);
+    width: min(430px, 92vw);
+    height: min(620px, 90dvh);
     max-height: 90vh;
     background:
-        linear-gradient(180deg, #f5f0e6 0%, #e9d8b0 100%);
-    border: 1px solid #c9a15a;
-    border-radius: 16px;
+        radial-gradient(circle at 10% 15%, rgba(255, 255, 255, 0.35), transparent 35%),
+        linear-gradient(180deg, #fdf6e3 0%, #e8d8a8 55%, #d9c38a 100%);
+    border: 2px solid #8a6d3b;
+    border-radius: 18px;
     box-shadow:
-        0 20px 50px rgba(0, 0, 0, 0.5),
-        inset 1px 1px 0 rgba(255, 255, 255, 0.8);
+        0 30px 60px rgba(0, 0, 0, 0.55),
+        0 0 0 1px rgba(255, 255, 255, 0.55) inset,
+        0 0 0 2px #c9a15a inset,
+        12px 12px 0 rgba(0, 0, 0, 0.35);
     display: flex;
     flex-direction: column;
-    animation: modalPanelEntrada 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation: modalPanelEntrada 0.55s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
     overflow: hidden;
     z-index: 71;
 }
 
 @keyframes modalPanelEntrada {
     from {
-        transform: translateX(40px);
+        transform: translateY(28px) scale(0.94);
         opacity: 0;
     }
     to {
-        transform: translateX(0);
+        transform: translateY(0) scale(1);
         opacity: 1;
     }
 }
 
+/* Sombra decorada debajo de la pegarmina para dar efecto "pegada al muro" */
+.modal-panel::after {
+    content: '';
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: -18px;
+    height: 18px;
+    background: rgba(0, 0, 0, 0.25);
+    filter: blur(8px);
+    border-radius: 50%;
+    z-index: 0;
+}
+
+/* Cinta decorativa superior estilo "pegada" */
+.pegarmina-cinta {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70px;
+    height: 20px;
+    background: #d97706;
+    border: 2px solid #7c2d12;
+    border-radius: 4px 4px 0 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    z-index: 5;
+}
+
+.pegarmina-cinta::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(0,0,0,0.12) 4px, rgba(0,0,0,0.12) 8px);
+    border-radius: 4px 4px 0 0;
+    pointer-events: none;
+}
+
+/* Esquina doblada superior derecha estilo hoja de papel pegada */
+.modal-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, transparent 50%, #c9a15a 50%);
+    border-top-right-radius: 16px;
+    z-index: 4;
+    pointer-events: none;
+}
+
 .modal-cerrar {
     position: absolute;
-    top: 16px;
-    right: 16px;
-    background: #5b2a1a;
+    top: 34px;
+    right: 34px;
+    background: #7a3d24;
     border: 2px solid #c9a15a;
-    color: #f5f0e6;
-    width: 38px;
-    height: 38px;
+    color: #fdf6e3;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 24px;
+    font-size: 26px;
     line-height: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-    z-index: 5;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+    z-index: 6;
 }
 
 .modal-cerrar:hover {
-    background: #7a3d24;
+    background: #9a4d34;
     border-color: #e8b575;
+    transform: rotate(15deg) scale(1.05);
 }
 
 .modal-contenido {
-    padding: 30px 26px;
+    padding: 34px 28px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 18px;
+    gap: 20px;
     overflow-y: auto;
     flex: 1;
     text-align: center;
+    position: relative;
+    z-index: 2;
 }
 
 .modal-titulo {
     margin: 0;
-    font-size: 26px;
+    font-size: 28px;
     font-family: Georgia, 'Times New Roman', serif;
-    color: #3a1a10;
+    color: #5a2e10;
     line-height: 1.15;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .modal-resumen {
     margin: 0;
-    font-size: 14.5px;
-    color: #3a2a1a;
-    line-height: 1.7;
+    font-size: 15px;
+    color: #4a3422;
+    line-height: 1.75;
     font-family: Georgia, 'Times New Roman', serif;
+    max-width: 320px;
 }
 
 .modal-imagen {
     width: 100%;
-    height: 190px;
-    background: #d7ccc8;
-    border: 1px solid #c9a15a;
-    border-radius: 10px;
+    height: 200px;
+    background: #e4d0b0;
+    border: 2px solid #c9a15a;
+    border-radius: 12px;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.1);
+    box-shadow:
+        inset 0 2px 8px rgba(0, 0, 0, 0.1),
+        0 6px 14px rgba(0, 0, 0, 0.25);
     flex-shrink: 0;
 }
 
@@ -136,37 +195,65 @@
     color: #8a6a3a;
     font-family: Georgia, 'Times New Roman', serif;
     font-size: 13px;
-    opacity: 0.6;
+    opacity: 0.65;
     text-align: center;
     padding: 0 16px;
 }
 
 .modal-boton {
     display: inline-block;
-    padding: 12px 24px;
-    background: #5b2a1a;
-    color: #f5f0e6;
-    border: none;
-    border-radius: 8px;
+    padding: 14px 28px;
+    background: #7a3d24;
+    color: #fdf6e3;
+    border: 2px solid #c9a15a;
+    border-radius: 10px;
     font-size: 15px;
     font-weight: 700;
     font-family: Georgia, 'Times New Roman', serif;
     text-align: center;
     text-decoration: none;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-    transition: transform 0.2s ease, background 0.2s ease;
-    margin-top: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+    transition: transform 0.18s ease, background 0.2s ease, box-shadow 0.18s ease;
+    margin-top: 8px;
     flex-shrink: 0;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .modal-boton:hover {
-    background: #7a3d24;
+    background: #9a4d34;
+    border-color: #e8b575;
     transform: translateY(-2px);
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.3);
 }
 
 .modal-boton:active {
     transform: translateY(0);
+}
+
+@media (max-width: 640px) {
+    .modal-panel {
+        width: 94vw;
+        height: min(720px, 92dvh);
+        border-radius: 14px;
+    }
+    .modal-contenido {
+        padding: 26px 20px;
+    }
+    .modal-titulo {
+        font-size: 24px;
+    }
+    .modal-imagen {
+        height: 170px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .modal-panel,
+    .modal-fondo {
+        animation: none;
+    }
+    .modal-panel {
+        transform: none;
+        opacity: 1;
+    }
 }
