@@ -2,8 +2,9 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import './Modal.css';
 
-function Modal({ libro, onCerrar }) {
+function Modal({ libro, chibiUrl, onCerrar }) {
     const [imagenCargada, setImagenCargada] = useState(Boolean(libro.imagen && libro.imagen.trim() !== ''));
+    const esquinaChibi = libro.id % 2 === 0 ? 'derecha' : 'izquierda';
     const tituloId = useId();
     const cerrarRef = useRef(null);
     const previoRef = useRef(null);
@@ -40,7 +41,6 @@ function Modal({ libro, onCerrar }) {
                 aria-labelledby={tituloId}
                 onClick={(e) => e.stopPropagation()}
             >
-                {/* Cinta decorativa superior estilo "pegada" */}
                 <div className="pegarmina-cinta" />
 
                 <button
@@ -51,6 +51,16 @@ function Modal({ libro, onCerrar }) {
                 >
                     ×
                 </button>
+
+                {chibiUrl && (
+                    <img
+                        className={`modal-chibi ${esquinaChibi}`}
+                        src={chibiUrl}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                    />
+                )}
 
                 <div className="modal-contenido">
                     <h2 className="modal-titulo" id={tituloId}>{libro.titulo}</h2>
@@ -66,6 +76,7 @@ function Modal({ libro, onCerrar }) {
                                 src={libro.imagen}
                                 alt={`Imagen de ${libro.titulo}`}
                                 loading="lazy"
+                                decoding="async"
                                 onError={() => setImagenCargada(false)}
                             />
                         ) : (
