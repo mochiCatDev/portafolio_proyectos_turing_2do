@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import Estanteria from '../../components/Estanteria/Estanteria';
+import DivEstetica from '../../components/DivEstetica/DivEstetica';
 import ReproductorMusica from '../../components/ReproductorMusica/ReproductorMusica';
 import { escenas } from '../../data/escenas';
 import './Experiencia.css';
@@ -89,7 +89,7 @@ function Experiencia() {
             )}
             <div className="video-fundido"></div>
 
-            {mostrarEstanteria && <Estanteria />}
+            {mostrarEstanteria && <DivEstetica indiceEscena={indiceEscena} />}
             <ReproductorMusica
                 indiceActual={indiceEscena}
                 onCambiarEscena={cambiarEscena}
