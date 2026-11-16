@@ -10,6 +10,7 @@ const ESPERA_INICIO = 6000;
 function Experiencia() {
     const [mostrarEstanteria, setMostrarEstanteria] = useState(false);
     const [indiceEscena, setIndiceEscena] = useState(0);
+    const [reproduciendo, setReproduciendo] = useState(false);
     const videoRef = useRef(null);
     const fondoImgRef = useRef(null);
     const reprodujoRef = useRef(false);
@@ -24,6 +25,23 @@ function Experiencia() {
 
         return () => clearTimeout(temporizador);
     }, []);
+
+    // Forzar recarga del video cuando cambie el fondo o el tipo de fondo
+    useEffect(() => {
+        const video = videoRef.current;
+        const img = fondoImgRef.current;
+
+        if (escenaActual.tipoFondo === 'video' && video) {
+            video.src = escenaActual.fondo;
+            video.load();
+            if (reproduciendo) {
+                video.play().catch(() => {});
+            }
+        }
+        if (escenaActual.tipoFondo === 'imagen' && img) {
+            img.src = escenaActual.fondo;
+        }
+    }, [escenaActual]);
 
     const manejarTiempo = () => {
         if (mostrarEstanteria) return;
@@ -54,10 +72,11 @@ function Experiencia() {
                         setMostrarEstanteria(true);
                         if (escenaActual.esIntro) {
                             cambiarEscena((i) => (i + 1) % escenas.length);
+                            setReproduciendo(true);
                         }
                     }}
                     onError={() => setMostrarEstanteria(true)}
-                    onPlaying={() => { reprodujoRef.current = true; }}
+                    onPlaying={() => { reprodujoRef.current = true; setReproduciendo(true); }}
                 />
             ) : (
                 <img
@@ -71,7 +90,10 @@ function Experiencia() {
             <div className="video-fundido"></div>
 
             {mostrarEstanteria && <Estanteria />}
-            <ReproductorMusica />
+            <ReproductorMusica
+                indiceActual={indiceEscena}
+                onCambiarEscena={cambiarEscena}
+            />
         </main>
     );
 }

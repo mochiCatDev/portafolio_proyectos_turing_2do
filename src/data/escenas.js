@@ -25,4 +25,20 @@ export const escenas = [
         tipoFondo: "video",
         esIntro: false,
     },
+    {
+        id: 3,
+        titulo: "Escena 3",
+        audio: "/audios/audio3.mp3",
+        fondo: "/fondos/fondo2.mp4",
+        tipoFondo: "video",
+        esIntro: false,
+    },
+    {
+        id: 4,
+        titulo: "Escena 4",
+        audio: "/audios/audio4.mp3",
+        fondo: "/fondos/fondo3.mp4",
+        tipoFondo: "video",
+        esIntro: false,
+    },
 ];

@@ -4,8 +4,7 @@ import './ReproductorMusica.css';
 
 const COOLDOWN_MS = 5000;
 
-export default function ReproductorMusica() {
-    const [indiceActual, setIndiceActual] = useState(0);
+export default function ReproductorMusica({ indiceActual, onCambiarEscena }) {
     const [reproduciendo, setReproduciendo] = useState(false);
     const [bloqueado, setBloqueado] = useState(false);
     const audioRef = useRef(null);
@@ -17,7 +16,7 @@ export default function ReproductorMusica() {
     const anteriorIndice = () => (indiceActual - 1 + escenas.length) % escenas.length;
 
     const cambiarEscena = (nuevoIndice, continuarReproduciendo = reproduciendo) => {
-        setIndiceActual(nuevoIndice);
+        onCambiarEscena(nuevoIndice);
         setBloqueado(true);
         if (cooldownRef.current) clearTimeout(cooldownRef.current);
         cooldownRef.current = setTimeout(() => setBloqueado(false), COOLDOWN_MS);
@@ -61,14 +60,7 @@ export default function ReproductorMusica() {
         audio.load();
 
         const manejarFin = () => {
-            // Si es intro, no repetir; pasar a la siguiente y no volver nunca
-            if (escenaActual.esIntro) {
-                setIndiceActual((i) => (i + 1) % escenas.length);
-                setReproduciendo(true);
-            } else {
-                setIndiceActual((i) => (i + 1) % escenas.length);
-                setReproduciendo(true);
-            }
+            setReproduciendo(true);
         };
 
         audio.addEventListener('ended', manejarFin);
