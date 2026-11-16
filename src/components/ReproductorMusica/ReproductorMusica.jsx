@@ -1,22 +1,26 @@
 import { useEffect, useRef, useState } from 'react';
-import { pistasMusica } from '../../data/musica';
+import { escenas } from '../../data/escenas';
 import './ReproductorMusica.css';
+
+const COOLDOWN_MS = 5000;
 
 export default function ReproductorMusica() {
     const [indiceActual, setIndiceActual] = useState(0);
     const [reproduciendo, setReproduciendo] = useState(false);
-    const [autoplayBloqueado, setAutoplayBloqueado] = useState(false);
-    const [errorPista, setErrorPista] = useState(null);
+    const [bloqueado, setBloqueado] = useState(false);
     const audioRef = useRef(null);
+    const cooldownRef = useRef(null);
 
-    const pistaActual = pistasMusica[indiceActual];
+    const escenaActual = escenas[indiceActual];
 
-    const siguienteIndice = () => (indiceActual + 1) % pistasMusica.length;
-    const anteriorIndice = () => (indiceActual - 1 + pistasMusica.length) % pistasMusica.length;
+    const siguienteIndice = () => (indiceActual + 1) % escenas.length;
+    const anteriorIndice = () => (indiceActual - 1 + escenas.length) % escenas.length;
 
-    const cambiarPista = (nuevoIndice, continuarReproduciendo = reproduciendo) => {
+    const cambiarEscena = (nuevoIndice, continuarReproduciendo = reproduciendo) => {
         setIndiceActual(nuevoIndice);
-        setErrorPista(null);
+        setBloqueado(true);
+        if (cooldownRef.current) clearTimeout(cooldownRef.current);
+        cooldownRef.current = setTimeout(() => setBloqueado(false), COOLDOWN_MS);
         if (continuarReproduciendo) {
             setReproduciendo(true);
         }
@@ -24,8 +28,7 @@ export default function ReproductorMusica() {
 
     const toggleReproduccion = async () => {
         const audio = audioRef.current;
-        if (!audio) return;
-
+        if (!audio || bloqueado) return;
         try {
             if (reproduciendo) {
                 audio.pause();
@@ -33,12 +36,9 @@ export default function ReproductorMusica() {
             } else {
                 await audio.play();
                 setReproduciendo(true);
-                setAutoplayBloqueado(false);
-                setErrorPista(null);
             }
         } catch {
             setReproduciendo(false);
-            setAutoplayBloqueado(true);
         }
     };
 
@@ -48,89 +48,79 @@ export default function ReproductorMusica() {
         try {
             await audio.play();
             setReproduciendo(true);
-            setErrorPista(null);
         } catch {
             setReproduciendo(false);
-            setAutoplayBloqueado(true);
         }
     };
 
     useEffect(() => {
         const audio = audioRef.current;
-        if (!audio || !pistaActual?.url) return;
+        if (!audio || !escenaActual?.audio) return;
 
-        audio.src = pistaActual.url;
+        audio.src = escenaActual.audio;
         audio.load();
 
         const manejarFin = () => {
-            setIndiceActual((i) => (i + 1) % pistasMusica.length);
-            setReproduciendo(true);
-            setErrorPista(null);
-        };
-
-        const manejarError = () => {
-            setErrorPista(pistaActual?.titulo || 'Pista');
-            setIndiceActual((i) => (i + 1) % pistasMusica.length);
-            setReproduciendo(true);
+            // Si es intro, no repetir; pasar a la siguiente y no volver nunca
+            if (escenaActual.esIntro) {
+                setIndiceActual((i) => (i + 1) % escenas.length);
+                setReproduciendo(true);
+            } else {
+                setIndiceActual((i) => (i + 1) % escenas.length);
+                setReproduciendo(true);
+            }
         };
 
         audio.addEventListener('ended', manejarFin);
-        audio.addEventListener('error', manejarError);
 
         intentoAutoplayInicial();
 
         return () => {
             audio.removeEventListener('ended', manejarFin);
-            audio.removeEventListener('error', manejarError);
+            audio.pause();
+            audio.src = '';
         };
-    }, [pistaActual]);
+    }, [escenaActual]);
 
     return (
         <nav className="reproductor-musica" aria-label="Control de musica de fondo">
             <audio ref={audioRef} preload="auto" />
-            {errorPista && (
-                <span className="mensaje-error">
-                    No se pudo reproducir: {errorPista}
-                </span>
-            )}
             <button
-                className="control-btn btn-atras"
+                className={`control-btn btn-atras ${bloqueado ? 'bloqueado' : ''}`}
                 aria-label="Pista anterior"
                 onClick={() => {
-                    cambiarPista(anteriorIndice(), true);
+                    cambiarEscena(anteriorIndice(), true);
                     const audio = audioRef.current;
                     if (audio && reproduciendo) {
                         audio.play().catch(() => {});
                     }
                 }}
+                disabled={bloqueado}
             >
                 <i className="fa-solid fa-step-backward"></i>
             </button>
             <button
-                className={`control-btn btn-play-pause ${reproduciendo ? 'activo' : ''} ${autoplayBloqueado ? 'bloqueado' : ''}`}
+                className={`control-btn btn-play-pause ${reproduciendo ? 'activo' : ''} ${bloqueado ? 'bloqueado' : ''}`}
                 aria-label={reproduciendo ? 'Pausar' : 'Reproducir'}
                 onClick={toggleReproduccion}
+                disabled={bloqueado}
             >
                 <i className={reproduciendo ? 'fa-solid fa-pause' : 'fa-solid fa-play'}></i>
             </button>
             <button
-                className="control-btn btn-adelante"
+                className={`control-btn btn-adelante ${bloqueado ? 'bloqueado' : ''}`}
                 aria-label="Pista siguiente"
                 onClick={() => {
-                    cambiarPista(siguienteIndice(), true);
+                    cambiarEscena(siguienteIndice(), true);
                     const audio = audioRef.current;
                     if (audio && reproduciendo) {
                         audio.play().catch(() => {});
                     }
                 }}
+                disabled={bloqueado}
             >
                 <i className="fa-solid fa-step-forward"></i>
             </button>
-            <span className="pista-actual">
-                {pistaActual
-                    ? `${pistaActual.titulo} (${indiceActual + 1} de ${pistasMusica.length})`
-                    : 'Sin musica'}
-            </span>
         </nav>
     );
 }
