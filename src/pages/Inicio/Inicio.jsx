@@ -8,8 +8,7 @@ import chica from "../../assets/inicio/chica.png";
 
 const RECURSOS = [
     chica,
-    ...escenas.map((e) => e.fondo),
-    ...escenas.filter((e) => e.audio).map((e) => e.audio),
+    escenas[0].fondo,
 ];
 
 function Inicio() {

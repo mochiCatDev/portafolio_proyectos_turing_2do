@@ -71,7 +71,7 @@ function Experiencia() {
                     autoPlay
                     muted={!!escenaActual.audio}
                     playsInline
-                    preload="metadata"
+                    preload="none"
                     loop={!escenaActual.esIntro}
                     disablePictureInPicture
                     onTimeUpdate={manejarTiempo}
