@@ -64,6 +64,7 @@ function Experiencia() {
             {/* Fondo de pantalla: video o imagen segķn la escena actual */}
             {escenaActual.tipoFondo === 'video' ? (
                 <video
+                    key={escenaActual.fondo}
                     ref={videoRef}
                     className="video-fondo"
                     src={escenaActual.fondo}
@@ -71,6 +72,7 @@ function Experiencia() {
                     muted
                     playsInline
                     preload="metadata"
+                    loop={!escenaActual.esIntro}
                     disablePictureInPicture
                     onTimeUpdate={manejarTiempo}
                     onEnded={() => {
@@ -85,6 +87,7 @@ function Experiencia() {
                 />
             ) : (
                 <img
+                    key={escenaActual.fondo}
                     ref={fondoImgRef}
                     className="video-fondo"
                     src={escenaActual.fondo}

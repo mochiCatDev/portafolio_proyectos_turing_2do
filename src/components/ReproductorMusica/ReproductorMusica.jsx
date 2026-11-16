@@ -9,6 +9,7 @@ export default function ReproductorMusica({ indiceActual, onCambiarEscena }) {
     const [bloqueado, setBloqueado] = useState(false);
     const audioRef = useRef(null);
     const cooldownRef = useRef(null);
+    const avanzarRef = useRef(null);
 
     const escenaActual = escenas[indiceActual];
 
@@ -53,6 +54,12 @@ export default function ReproductorMusica({ indiceActual, onCambiarEscena }) {
     };
 
     useEffect(() => {
+        avanzarRef.current = () => {
+            onCambiarEscena((indiceActual + 1) % escenas.length);
+        };
+    }, [indiceActual, onCambiarEscena]);
+
+    useEffect(() => {
         const audio = audioRef.current;
         if (!audio || !escenaActual?.audio) return;
 
@@ -60,6 +67,7 @@ export default function ReproductorMusica({ indiceActual, onCambiarEscena }) {
         audio.load();
 
         const manejarFin = () => {
+            avanzarRef.current?.();
             setReproduciendo(true);
         };
 
