@@ -5,7 +5,7 @@ import './AvisoMovil.css';
  * Detecta si la visita es desde un dispositivo móvil.
  * Si lo es, muestra un aviso pidiendo usar una computadora y oculta el contenido.
  */
-export default function AvisoMovil({ niños }) {
+export default function AvisoMovil({ children }) {
     const [esMovil, setEsMovil] = useState(false);
 
     useEffect(() => {
@@ -45,5 +45,5 @@ export default function AvisoMovil({ niños }) {
         );
     }
 
-    return <>{niños}</>;
+    return <>{children}</>;
 }
