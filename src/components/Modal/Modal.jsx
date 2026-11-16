@@ -4,7 +4,6 @@ import './Modal.css';
 
 function Modal({ libro, chibiUrl, onCerrar }) {
     const [imagenCargada, setImagenCargada] = useState(Boolean(libro.imagen && libro.imagen.trim() !== ''));
-    const esquinaChibi = libro.id % 2 === 0 ? 'derecha' : 'izquierda';
     const tituloId = useId();
     const cerrarRef = useRef(null);
     const previoRef = useRef(null);
@@ -52,9 +51,10 @@ function Modal({ libro, chibiUrl, onCerrar }) {
                     ×
                 </button>
 
+                {/* Chibi en esquina inferior derecha, fuera de la caja del modal */}
                 {chibiUrl && (
                     <img
-                        className={`modal-chibi ${esquinaChibi}`}
+                        className="modal-chibi"
                         src={chibiUrl}
                         alt=""
                         loading="lazy"
