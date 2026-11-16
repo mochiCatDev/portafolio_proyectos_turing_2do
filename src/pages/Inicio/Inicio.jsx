@@ -9,7 +9,7 @@ import chica from "../../assets/inicio/chica.png";
 const RECURSOS = [
     chica,
     ...escenas.map((e) => e.fondo),
-    ...escenas.map((e) => e.audio),
+    ...escenas.filter((e) => e.audio).map((e) => e.audio),
 ];
 
 function Inicio() {

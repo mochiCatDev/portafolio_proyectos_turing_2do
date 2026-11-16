@@ -12,6 +12,7 @@ export default function ReproductorMusica({ indiceActual, onCambiarEscena, mostr
     const avanzarRef = useRef(null);
 
     const escenaActual = escenas[indiceActual];
+    const tieneAudioPropio = !!escenaActual?.audio;
 
     const siguienteIndice = () => (indiceActual + 1) % escenas.length;
     const anteriorIndice = () => (indiceActual - 1 + escenas.length) % escenas.length;
@@ -29,7 +30,7 @@ export default function ReproductorMusica({ indiceActual, onCambiarEscena, mostr
 
     const toggleReproduccion = async () => {
         const audio = audioRef.current;
-        if (!audio || !mostrar) return;
+        if (!audio || !mostrar || !tieneAudioPropio) return;
         try {
             if (reproduciendo) {
                 audio.pause();
@@ -38,17 +39,6 @@ export default function ReproductorMusica({ indiceActual, onCambiarEscena, mostr
                 await audio.play();
                 setReproduciendo(true);
             }
-        } catch {
-            setReproduciendo(false);
-        }
-    };
-
-    const intentoAutoplayInicial = async () => {
-        const audio = audioRef.current;
-        if (!audio) return;
-        try {
-            await audio.play();
-            setReproduciendo(true);
         } catch {
             setReproduciendo(false);
         }
@@ -74,7 +64,10 @@ export default function ReproductorMusica({ indiceActual, onCambiarEscena, mostr
 
         audio.addEventListener('ended', manejarFin);
 
-        intentoAutoplayInicial();
+        audio
+            .play()
+            .then(() => setReproduciendo(true))
+            .catch(() => setReproduciendo(false));
 
         return () => {
             audio.removeEventListener('ended', manejarFin);
@@ -102,10 +95,10 @@ export default function ReproductorMusica({ indiceActual, onCambiarEscena, mostr
                 <i className="fa-solid fa-step-backward"></i>
             </button>
             <button
-                className={`control-btn btn-play-pause ${reproduciendo ? 'activo' : ''} ${cambioBloqueado ? 'bloqueado' : ''}`}
+                className={`control-btn btn-play-pause ${reproduciendo ? 'activo' : ''} ${cambioBloqueado || !tieneAudioPropio ? 'bloqueado' : ''}`}
                 aria-label={reproduciendo ? 'Pausar' : 'Reproducir'}
                 onClick={toggleReproduccion}
-                disabled={!mostrar}
+                disabled={!mostrar || !tieneAudioPropio}
             >
                 <i className={reproduciendo ? 'fa-solid fa-pause' : 'fa-solid fa-play'}></i>
             </button>

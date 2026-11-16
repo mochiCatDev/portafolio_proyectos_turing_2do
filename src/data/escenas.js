@@ -13,7 +13,8 @@ export const escenas = [
         id: 1,
         titulo: "Intro",
         temaId: 1,
-        audio: "/audios/audio1.mp3",
+        // El fondo.mp4 trae su propia música; no usa audio separado
+        audio: null,
         fondo: "/fondos/fondo.mp4",
         tipoFondo: "video",
         esIntro: true,

@@ -69,7 +69,7 @@ function Experiencia() {
                     className="video-fondo"
                     src={escenaActual.fondo}
                     autoPlay
-                    muted
+                    muted={!!escenaActual.audio}
                     playsInline
                     preload="metadata"
                     loop={!escenaActual.esIntro}
