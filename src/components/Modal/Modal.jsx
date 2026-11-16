@@ -34,12 +34,15 @@ function Modal({ libro, onCerrar }) {
     return createPortal(
         <div className="modal-fondo" onClick={onCerrar}>
             <aside
-                className="modal-panel"
+                className="modal-panel pegarmina"
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby={tituloId}
                 onClick={(e) => e.stopPropagation()}
             >
+                {/* Cinta decorativa superior estilo "pegada" */}
+                <div className="pegarmina-cinta" />
+
                 <button
                     ref={cerrarRef}
                     className="modal-cerrar"
