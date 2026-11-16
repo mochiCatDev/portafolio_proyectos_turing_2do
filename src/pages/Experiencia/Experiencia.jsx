@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import Estanteria from '../../components/Estanteria/Estanteria';
+import DivEstetica from '../../components/DivEstetica/DivEstetica';
 import ReproductorMusica from '../../components/ReproductorMusica/ReproductorMusica';
 import { escenas } from '../../data/escenas';
 import './Experiencia.css';
@@ -11,10 +11,15 @@ function Experiencia() {
     const [mostrarEstanteria, setMostrarEstanteria] = useState(false);
     const [indiceEscena, setIndiceEscena] = useState(0);
     const [reproduciendo, setReproduciendo] = useState(false);
+    const reproRef = useRef(false);
     const videoRef = useRef(null);
     const fondoImgRef = useRef(null);
     const reprodujoRef = useRef(false);
     const escenaActual = escenas[indiceEscena];
+
+    useEffect(() => {
+        reproRef.current = reproduciendo;
+    }, [reproduciendo]);
 
     useEffect(() => {
         const temporizador = setTimeout(() => {
@@ -34,7 +39,7 @@ function Experiencia() {
         if (escenaActual.tipoFondo === 'video' && video) {
             video.src = escenaActual.fondo;
             video.load();
-            if (reproduciendo) {
+            if (reproRef.current) {
                 video.play().catch(() => {});
             }
         }
@@ -59,6 +64,7 @@ function Experiencia() {
             {/* Fondo de pantalla: video o imagen segķn la escena actual */}
             {escenaActual.tipoFondo === 'video' ? (
                 <video
+                    key={escenaActual.fondo}
                     ref={videoRef}
                     className="video-fondo"
                     src={escenaActual.fondo}
@@ -66,6 +72,7 @@ function Experiencia() {
                     muted
                     playsInline
                     preload="metadata"
+                    loop={!escenaActual.esIntro}
                     disablePictureInPicture
                     onTimeUpdate={manejarTiempo}
                     onEnded={() => {
@@ -80,6 +87,7 @@ function Experiencia() {
                 />
             ) : (
                 <img
+                    key={escenaActual.fondo}
                     ref={fondoImgRef}
                     className="video-fondo"
                     src={escenaActual.fondo}
@@ -89,10 +97,11 @@ function Experiencia() {
             )}
             <div className="video-fundido"></div>
 
-            {mostrarEstanteria && <Estanteria />}
+            {mostrarEstanteria && <DivEstetica indiceEscena={indiceEscena} />}
             <ReproductorMusica
                 indiceActual={indiceEscena}
                 onCambiarEscena={cambiarEscena}
+                mostrar={mostrarEstanteria}
             />
         </main>
     );

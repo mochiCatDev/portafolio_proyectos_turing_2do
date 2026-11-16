@@ -21,6 +21,16 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  animation: fundidoEntrada 0.9s ease;
+}
+
+@keyframes fundidoEntrada {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .video-fundido {
