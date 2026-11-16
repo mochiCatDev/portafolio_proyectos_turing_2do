@@ -45,7 +45,6 @@ function Libro({ proyecto, onClick }) {
         >
             <span className="libro-canto-superior" />
             <span className="libro-lomo">
-                <span className="libro-cinta" />
                 <span className="libro-titulo">{proyecto.titulo}</span>
             </span>
             <span className="libro-canto-inferior" />
