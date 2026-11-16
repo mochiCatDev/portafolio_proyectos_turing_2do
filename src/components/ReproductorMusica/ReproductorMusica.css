@@ -1,0 +1,77 @@
+.reproductor-musica {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: rgba(15, 15, 15, 0.85);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 30px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    color: #fff;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 0.85rem;
+}
+
+.control-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.2s ease;
+}
+
+.control-btn:active {
+    transform: scale(0.92);
+}
+
+.control-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.control-btn i {
+    font-size: 1.15rem;
+    pointer-events: none;
+}
+
+.btn-play-pause.activo i {
+    color: #10b981;
+}
+
+.btn-play-pause.bloqueado i {
+    color: #ef4444;
+    animation: parpadeo 1.2s infinite;
+}
+
+@keyframes parpadeo {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.pista-actual {
+    font-size: 0.78rem;
+    opacity: 0.8;
+    letter-spacing: 0.3px;
+    margin-left: 6px;
+}
+
+.mensaje-error {
+    font-size: 0.72rem;
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-right: 10px;
+    animation: parpadeo 1.5s infinite alternate;
+}

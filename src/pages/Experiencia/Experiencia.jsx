@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import Estanteria from '../../components/Estanteria/Estanteria';
+import ReproductorMusica from '../../components/ReproductorMusica/ReproductorMusica';
 import './Experiencia.css';
 
 const SEGUNDO_APERTURA = 9;
@@ -47,6 +48,7 @@ function Experiencia() {
             </div>
 
             {mostrarEstanteria && <Estanteria />}
+            <ReproductorMusica />
         </main>
     );
 }
