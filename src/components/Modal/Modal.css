@@ -2,14 +2,14 @@
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.35);
-    backdrop-filter: blur(6px);
+    backdrop-filter: blur(4px);
     z-index: 60;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 24px;
     box-sizing: border-box;
-    animation: modalFondoEntrada 0.5s ease;
+    animation: modalFondoEntrada 0.4s ease;
 }
 
 @keyframes modalFondoEntrada {
@@ -33,20 +33,21 @@
     border: 2px solid #8a6d3b;
     border-radius: 18px;
     box-shadow:
-        0 30px 60px rgba(0, 0, 0, 0.55),
+        0 20px 40px rgba(0, 0, 0, 0.4),
         0 0 0 1px rgba(255, 255, 255, 0.55) inset,
         0 0 0 2px #c9a15a inset,
-        12px 12px 0 rgba(0, 0, 0, 0.35);
+        8px 8px 0 rgba(0, 0, 0, 0.25);
     display: flex;
     flex-direction: column;
-    animation: modalPanelEntrada 0.55s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+    animation: modalPanelEntrada 0.45s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
     overflow: hidden;
     z-index: 71;
+    content-visibility: auto;
 }
 
 @keyframes modalPanelEntrada {
     from {
-        transform: translateY(28px) scale(0.94);
+        transform: translateY(22px) scale(0.95);
         opacity: 0;
     }
     to {
@@ -61,10 +62,10 @@
     position: absolute;
     left: 14px;
     right: 14px;
-    bottom: -18px;
-    height: 18px;
-    background: rgba(0, 0, 0, 0.25);
-    filter: blur(8px);
+    bottom: -14px;
+    height: 14px;
+    background: rgba(0, 0, 0, 0.2);
+    filter: blur(6px);
     border-radius: 50%;
     z-index: 0;
 }
@@ -102,46 +103,67 @@
     position: absolute;
     top: 0;
     right: 0;
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     background: linear-gradient(135deg, transparent 50%, #c9a15a 50%);
     border-top-right-radius: 16px;
     z-index: 4;
     pointer-events: none;
 }
 
+/* Chibi: tamaño fijo, esquina inferior (izquierda o derecha random) */
+.modal-chibi {
+    position: absolute;
+    width: 110px;
+    height: 110px;
+    object-fit: contain;
+    pointer-events: none;
+    z-index: 3;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.modal-chibi.izquierda {
+    bottom: 10px;
+    left: 10px;
+}
+
+.modal-chibi.derecha {
+    bottom: 10px;
+    right: 10px;
+}
+
 .modal-cerrar {
     position: absolute;
-    top: 34px;
-    right: 34px;
+    top: 30px;
+    right: 30px;
     background: #7a3d24;
     border: 2px solid #c9a15a;
     color: #fdf6e3;
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 26px;
+    font-size: 24px;
     line-height: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     z-index: 6;
 }
 
 .modal-cerrar:hover {
     background: #9a4d34;
     border-color: #e8b575;
-    transform: rotate(15deg) scale(1.05);
+    transform: rotate(12deg) scale(1.05);
 }
 
 .modal-contenido {
-    padding: 34px 28px;
+    padding: 30px 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 16px;
     overflow-y: auto;
     flex: 1;
     text-align: center;
@@ -151,7 +173,7 @@
 
 .modal-titulo {
     margin: 0;
-    font-size: 28px;
+    font-size: 26px;
     font-family: Georgia, 'Times New Roman', serif;
     color: #5a2e10;
     line-height: 1.15;
@@ -160,16 +182,16 @@
 
 .modal-resumen {
     margin: 0;
-    font-size: 15px;
+    font-size: 14.5px;
     color: #4a3422;
-    line-height: 1.75;
+    line-height: 1.7;
     font-family: Georgia, 'Times New Roman', serif;
-    max-width: 320px;
+    max-width: 300px;
 }
 
 .modal-imagen {
     width: 100%;
-    height: 200px;
+    height: 180px;
     background: #e4d0b0;
     border: 2px solid #c9a15a;
     border-radius: 12px;
@@ -179,8 +201,8 @@
     justify-content: center;
     position: relative;
     box-shadow:
-        inset 0 2px 8px rgba(0, 0, 0, 0.1),
-        0 6px 14px rgba(0, 0, 0, 0.25);
+        inset 0 2px 6px rgba(0, 0, 0, 0.1),
+        0 4px 10px rgba(0, 0, 0, 0.2);
     flex-shrink: 0;
 }
 
@@ -202,28 +224,27 @@
 
 .modal-boton {
     display: inline-block;
-    padding: 14px 28px;
+    padding: 12px 24px;
     background: #7a3d24;
     color: #fdf6e3;
     border: 2px solid #c9a15a;
     border-radius: 10px;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
     font-family: Georgia, 'Times New Roman', serif;
     text-align: center;
     text-decoration: none;
     cursor: pointer;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
-    transition: transform 0.18s ease, background 0.2s ease, box-shadow 0.18s ease;
-    margin-top: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.15s ease, background 0.15s ease;
+    margin-top: 6px;
     flex-shrink: 0;
 }
 
 .modal-boton:hover {
     background: #9a4d34;
     border-color: #e8b575;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
 }
 
 .modal-boton:active {
@@ -237,13 +258,17 @@
         border-radius: 14px;
     }
     .modal-contenido {
-        padding: 26px 20px;
+        padding: 22px 16px;
     }
     .modal-titulo {
-        font-size: 24px;
+        font-size: 22px;
     }
     .modal-imagen {
-        height: 170px;
+        height: 150px;
+    }
+    .modal-chibi {
+        width: 90px;
+        height: 90px;
     }
 }
 

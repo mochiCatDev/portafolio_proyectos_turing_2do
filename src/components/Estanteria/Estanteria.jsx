@@ -1,5 +1,6 @@
 import { Fragment, useMemo, useState } from 'react';
 import { proyectos } from '../../data/proyectos';
+import { chibis } from '../../data/chibis';
 import Modal from '../../components/Modal/Modal';
 import './Estanteria.css';
 
@@ -112,7 +113,11 @@ function Estanteria() {
             </div>
 
             {libroSeleccionado && (
-                <Modal libro={libroSeleccionado} onCerrar={() => setLibroSeleccionado(null)} />
+                <Modal
+                    libro={libroSeleccionado}
+                    chibiUrl={chibis[proyectos.findIndex((p) => p.id === libroSeleccionado.id) % chibis.length].url}
+                    onCerrar={() => setLibroSeleccionado(null)}
+                />
             )}
         </aside>
     );
