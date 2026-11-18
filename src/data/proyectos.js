@@ -63,4 +63,12 @@ export const proyectos = [
         imagen: "/imagenes/proyectos/nanotecnologia.png",
         url: "https://nanotecnologia-infografia-turing.vercel.app/"
     },
+    {
+        id: 9,
+        titulo: "Chronos",
+        descripcion: "Línea de tiempo interactiva en formato de reloj giratorio que repasa los hitos clave del primer quimestre, desde el Paleolítico hasta las Revoluciones Industriales, sirviendo como refuerzo académico para el examen trimestral de Historia y Ciencias Sociales.",
+        tecnologias: ["REACT", "JS", "Web Audio API"],
+        imagen: "/imagenes/proyectos/chronos.png",
+        url: "https://chronos-ashy-five.vercel.app/"
+    },
 ];
