@@ -71,4 +71,12 @@ export const proyectos = [
         imagen: "/imagenes/proyectos/chronos.png",
         url: "https://chronos-ashy-five.vercel.app/"
     },
+    {
+      id: 10,
+      titulo: "QuickBite",
+      descripcion: "Aplicación Web para el servicio de comida rapida, donde el usuario puede registrarse, iniciar sesión y pedir comida a travez de la app. Los pedidos las sirve un encargado de la tienda, proyecto creado para cumplir con la actividad de Ingles (Emprendimiento).",
+      tecnologias: ["React", "JS", "FireBase"],
+      imagen: "/imagenes/proyectos/quickbite.png",
+      url: "https://quickbite-ruby-eight.vercel.app/"
+    }
 ];
