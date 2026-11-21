@@ -63,4 +63,28 @@ export const proyectos = [
         imagen: "/imagenes/proyectos/nanotecnologia.png",
         url: "https://nanotecnologia-infografia-turing.vercel.app/"
     },
+    {
+        id: 9,
+        titulo: "Chronos",
+        descripcion: "Línea de tiempo interactiva en formato de reloj giratorio que repasa los hitos clave del primer quimestre, desde el Paleolítico hasta las Revoluciones Industriales, sirviendo como refuerzo académico para el examen trimestral de Historia y Ciencias Sociales.",
+        tecnologias: ["REACT", "JS", "Web Audio API"],
+        imagen: "/imagenes/proyectos/chronos.png",
+        url: "https://chronos-ashy-five.vercel.app/"
+    },
+    {
+      id: 10,
+      titulo: "QuickBite",
+      descripcion: "Aplicación Web para el servicio de comida rapida, donde el usuario puede registrarse, iniciar sesión y pedir comida a travez de la app. Los pedidos las sirve un encargado de la tienda, proyecto creado para cumplir con la actividad de Ingles (Emprendimiento).",
+      tecnologias: ["React", "JS", "FireBase"],
+      imagen: "/imagenes/proyectos/quickbite.png",
+      url: "https://quickbite-ruby-eight.vercel.app/"
+    },
+    {
+      id: 11,
+      titulo: "Lenguajes de Programación",
+      descripcion: "Ordenador gráfico que explica un poco sobre los lenguajes de programación: los tipos de lenguajes, importancia, conceptos y más.",
+      tecnologias: ["React", "JS"],
+      imagen: "/imagenes/proyectos/lenguajes-de-programacion.png",
+      url: "https://turing-ia-tecnologia-aplicada-lengu.vercel.app/"
+    }
 ];

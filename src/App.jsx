@@ -1,5 +1,4 @@
 import { Route, Routes } from 'react-router-dom'
-import './App.css'
 import AvisoMovil from './components/AvisoMovil/AvisoMovil'
 import Inicio from './pages/Inicio/Inicio'
 import Experiencia from './pages/Experiencia/Experiencia'
