@@ -78,5 +78,13 @@ export const proyectos = [
       tecnologias: ["React", "JS", "FireBase"],
       imagen: "/imagenes/proyectos/quickbite.png",
       url: "https://quickbite-ruby-eight.vercel.app/"
+    },
+    {
+      id: 11,
+      titulo: "Lenguajes de Programación",
+      descripcion: "Ordenador gráfico que explica un poco sobre los lenguajes de programación: los tipos de lenguajes, importancia, conceptos y más.",
+      tecnologias: ["React", "JS"],
+      imagen: "/imagenes/proyectos/lenguajes-de-programacion.png",
+      url: "https://turing-ia-tecnologia-aplicada-lengu.vercel.app/"
     }
 ];
