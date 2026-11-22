@@ -214,16 +214,13 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: 12px;
-    margin-top: 24px;
-    padding-top: 24px;
-    border-top: 1px solid var(--color-borde-secundario, rgba(31, 111, 235, 0.2));
 }
 
 .modal-tecnologia {
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 16px;
+    font-size: 24px;
     color: var(--color-texto-secundario, #8b949e);
 }
 
