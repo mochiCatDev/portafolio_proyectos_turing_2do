@@ -209,6 +209,21 @@
     transform: translateY(0);
 }
 
+.modal-tecnologias {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+.modal-tecnologia {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 24px;
+    color: var(--color-texto-secundario, #8b949e);
+}
+
 /* Chibi: esquina inferior derecha, sobresaliendo del modal */
 .modal-chibi {
     position: absolute;

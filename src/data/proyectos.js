@@ -86,5 +86,13 @@ export const proyectos = [
       tecnologias: ["React", "JS"],
       imagen: "/imagenes/proyectos/lenguajes-de-programacion.png",
       url: "https://turing-ia-tecnologia-aplicada-lengu.vercel.app/"
+    },
+    {
+        id: 12,
+        titulo: "Generator Colors",
+        descripcion: "Una aplicación web interactiva desarrollada en React que permite generar y bloquear paletas de colores personalizados con una estética elegante y suave. Cuenta con la función de copiar códigos hexadecimales con notificaciones visuales y un sistema para fijar colores favoritos al generar nuevas combinaciones.",
+        tecnologias: ["React", "JS"],
+        imagen: "/imagenes/proyectos/generator-colors.png",
+        url: "https://generatorcolor.vercel.app/"
     }
 ];
