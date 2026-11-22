@@ -67,7 +67,6 @@ function Modal({ libro, chibiUrl, tema, onCerrar }) {
                     ×
                 </button>
 
-                {/* Chibi en esquina inferior derecha, fuera de la caja del modal */}
                 {chibiUrl && (
                     <img
                         className="modal-chibi"
@@ -112,6 +111,29 @@ function Modal({ libro, chibiUrl, tema, onCerrar }) {
                             Entrar
                         </a>
                     )}
+
+                    <div className="modal-tecnologias">
+                        {libro.tecnologias &&
+                            libro.tecnologias.length > 0 &&
+                            libro.tecnologias.map((tec, index) => {
+                                const iconMap = {
+                                    HTML: 'fa-html5',
+                                    CSS: 'fa-css3',
+                                    JS: 'fa-js',
+                                    React: 'fa-react',
+                                    REACT: 'fa-react',
+                                };
+                                const iconClass = iconMap[tec]
+                                    ? `fa-brands ${iconMap[tec]}`
+                                    : tec;
+                                return (
+                                    <span key={index} className="modal-tecnologia">
+                                        <i className={iconClass} />
+                                        {iconMap[tec] ? '' : tec}
+                                    </span>
+                                );
+                            })}
+                    </div>
                 </div>
             </aside>
         </div>,
